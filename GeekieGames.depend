@@ -1,0 +1,15 @@
+# depslib dependency file v1.0
+1528833419 source:/home/italo-tiago/Documentos/Codigos_de_LP_2018.1/GeekieGames/GeekieGames.cpp
+	<iostream>
+	<cstdlib>
+	<string.h>
+	<fstream>
+	<time.h>
+	"GeekieGames.h"
+
+1528853327 source:/home/italo-tiago/Documentos/Codigos_de_LP_2018.1/GeekieGames/main.cpp
+	<iostream>
+	"GeekieGames.h"
+
+1528830268 /home/italo-tiago/Documentos/Codigos_de_LP_2018.1/GeekieGames/GeekieGames.h
+
