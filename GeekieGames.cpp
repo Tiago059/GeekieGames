@@ -3,7 +3,6 @@
 #include <cstdlib>
 #include <string.h>
 #include <time.h>
-#include <ctype.h>
 #include "GeekieGames.h";
 
 using namespace std;
@@ -17,6 +16,7 @@ void esperar(int segundos){
 }
 
 int buscaCaractere(char *stringue, char busca){
+    /* usar o laço de while com isalpha ou algo assim */
     /* Essa função faz uma procura de um caractere específico em uma string. */
     bool achou = false;
     unsigned i;
@@ -35,72 +35,40 @@ int buscaCaractere(char *stringue, char busca){
     else return 0;
 
 }
+char *split(char *stringue, char delimitador, unsigned *posicao){
+    char *palavra;
+    unsigned i, j, k;
+    bool achou = false;
 
-char **splitting(char *stringues, char delimiter, int mode){
-
-    /* Essa função pega uma string e divide ela toda vez que encontra um delimitador específico, salvando todas as divisões
-    em um vetor de strings (matriz). Existem dois modos: uma pra quando uma string TERMINA com um delimitador, que é o 1,
-    e outro para quando a string NÃO TERMINA com um delimitador, que é o 2. A diferença está em preencher a ultima
-    posicao da matriz. */
-
-    //char stringue[] = {"bundas*rolando*a*mil*por*hora*"};
-    char **split, *palavra;
-    unsigned i, j, inicio = 0, fim, splitCount = 0, del = 0, indiceDel = 0, *delimiters, finish;
-
-    // contando quantas ocorrências do delimitador existem
-    for (i = 0;i < strlen(stringues);i++) if (stringues[i] == delimiter) del++;
-
-    /* criando a matriz alocada dinamicamente com o total de palavras presentes na string
-    antes que você pense, mas ah são 6 palavras mas o del deu 5 (por exemplo), lembre-se
-    que ao ler o vetor começamos do 0, então na teoria, ir de 0 até 5 é o mesmo que 6. */
-    split = new char*[del];
-    for (i = 0;i < del;i++) split[i] = new char[100]; // sendo generoso e supondo palavras de no máximo 100 caracteres
-
-    for (i = 0;i < del;i++) split[i] = NULL;
-    //criando o vetor alocado dinamicamente que guardará todas as posições dos delimitadores
-    delimiters = new unsigned[del];
-    if (mode == 2) delimiters[del] = strlen(stringues); // isso vai ser util para pegar a ultima palavra apos o ultimo delimitador
-
-    //guardando as posições dos delimitadores no vetor
-    j = 0;
-    for (i = 0;i < strlen(stringues);i++){
-        if (stringues[i] == delimiter){
-            delimiters[j] = i;
-            j++;
+    for (i = *posicao;i < strlen(stringue);i++){
+        if (stringue[i] == delimitador){
+            palavra = new char[i-(*posicao)];
+            j = 0;
+            for (k = *posicao;k < i;k++){
+                palavra[j] = stringue[k];
+                j++;
+            }
+            *posicao = i + 1;
+            achou = true;
+            break;
         }
     }
 
-    /* dependendo do modo, ele altera o final da string. Se o modo é 1, entao o tamanho da matriz vai até o delimitador,
-    pois a string termina com um delimitador. Se não, acrescenta-se mais um espaço, pois neste caso, como após o ultimo
-    delimitador da string existe mais caracteres, é preciso guardar uma posição para eles. */
-    if (mode == 1) finish = del;
-    else finish = del + 1;
-
-    // retirando a palavra de intervalos específicos, definidos através das posições dos delimitadores
-    while (splitCount < finish){
-        fim = delimiters[indiceDel]; // o fim das palavras é definido pelos elementos de delimiters
-        palavra = new char[fim - inicio]; // o tamanho da palavra é dado pelo fim da palavra menos o inicio
-
+    if (achou == false){
+        palavra = new char[strlen(stringue)-(*posicao)];
         j = 0;
-        for (i = inicio;i < fim;i++){ // armazenando a palavra entre o intervalo do inicio ao fim
-            palavra[j] = stringues[i];
+        for (k = *posicao;k < strlen(stringue);k++){
+            palavra[j] = stringue[k];
             j++;
         }
-
-        // salvando a palavra na matriz e preparando para a próxima execução do laço
-        split[splitCount] = palavra; //
-        //cout << palavra;
-        palavra = NULL; // zerando palavra para novos usos nas próximas interações
-        splitCount++;
-
-        // selecionando a próxima posição guardada pelo delimitador, assim como o novo inicio que possui o antigo fim
-        indiceDel++;
-        inicio = fim + 1;
-
+        *posicao = strlen(stringue);
+        return palavra;
     }
 
-    // finalmente, retornando a matriz com todas as palavras bonitinhas
-    return split;
+    else {
+        return palavra;
+    }
+
 }
 
 // funções principais
@@ -206,18 +174,15 @@ void login_usuario(){
     login usuario; // novo login
     string linha; // string que guarda os dados do arquivo de texto
     fstream arquivo; // manipulador de arquivos
-    char **vetorLogin, **vetorLogin2, *buffer; // dois vetores de strings e um vetor de caracteres, normal
     bool achou = false; // flag pra saber se o login foi valido ou nao
-    unsigned i;
-
-    cout << "Bem-vindo a tela de login!\nDigite suas informacoes para acessar o Proximo Exercicio!\n";
+    char *string1, *string2, *string3, *buffer;
+    unsigned posBusca1 = 0, posBusca2 = 0; /* preciso de dois posBuscas e dois strings porque vou dividir
+    minha string duas vezes por dois delimitadores diferentes */
 
     // ficará no loop até digitar corretamente ou voltar ao menu inicial
     while (achou == false){
 
-        // lendo as entradas do usuário
-        //cout << "Tecle ESC ou DEL e então ENTER para voltar ao menu inicial.\n";
-
+        cout << "Bem-vindo a tela de login!\nDigite suas informacoes para acessar o Proximo Exercicio!\n";
         cout << "Digite o seu nome de usuario: ";
         cin >> usuario.nome;
         cout << "Digite a sua senha: ";
@@ -226,34 +191,45 @@ void login_usuario(){
         // retirando do arquivo de texto os logins e salvando em buffer
         arquivo.open("database/logins.txt", ios::in);
         getline(arquivo, linha); // pegando a linha que é string
-        buffer = new char[linha.length()+1]; // alocando dinamicamente um vetor de char com o tamanho da string
+        buffer = new char[linha.length()]; // alocando dinamicamente um vetor de char com o tamanho da string
         strcpy(buffer, linha.c_str()); // copiando o conteudo da string para o vetor de char
 
-        // separando os logins
-        vetorLogin = splitting(buffer, '/', 1); // salvando todos os logins em uma matriz
-
-        i = 0;
-        while (vetorLogin[i] != NULL){
-            // separando cada nome de usuario e de login
-            vetorLogin2 = splitting(vetorLogin[i], '*', 2);
-            // comparando se a string do arquivo de texto é o mesmo da entrada do usuario
-            if ( (strcmp(vetorLogin2[0], usuario.nome) == 0) && (strcmp(vetorLogin2[1], usuario.senha) == 0) ) achou = true;
-            i++;
+        /* posBusca1 e posBusca2 são modificados na função toda vez que um delimitador novo é encontrado
+        portanto, ao chamar a função mais de uma vez, ele irá procurar a partir
+        do novo valor de posBuscaX */
+        // separando os logins e fazendo a checagem
+        while (posBusca1 < strlen(buffer)){
+            // separando um login (nome e senha juntos)
+            string1 = split(buffer, '/', &posBusca1);
+            cout << string1 << endl;
+            // separando o nome
+            string2 = split(string1, '*', &posBusca2);
+            cout << string2 << endl;
+            // separando a senha
+            string3 = split(string1, '*', &posBusca2);
+            cout << string3 << endl;
+            // comparando se a senha e o nome batem
+            if ( (strcmp(usuario.nome, string2) == 0) && (strcmp(usuario.senha, string3) == 0) ) {
+                achou = true;
+                break;
+            }
+             posBusca2 = 0; // para sempre procurar desde o inicio da substring, a cada interação
         }
 
         // mostrando pro usuario se ele conseguiu logar ou não
         if (achou){
+            system("clear");
             cout << "LOGADO COM SUCESSO";
-            //esperar(1.5);
+            esperar(2);
+            system("clear");
             // menu_exercicios();
-            break;
         }
         else {
             system("clear");
             cout << "Usuario e/ou senha invalidos. Tente novamente.\n";
             esperar(2);
             system("clear");
-            continue;
+            login_usuario();
         }
 
     }

@@ -8,7 +8,7 @@ typedef struct _login_ {
 // funções que ajudam outras funções
 void esperar(int segundos);
 int buscaCaractere(char *stringue, char *busca);
-char **splitting(char *stringue, char delimiter);
+char *split(char *stringue, char delimitador, unsigned *posicao);
 
 // funções que exibem menus
 void menu_principal();
