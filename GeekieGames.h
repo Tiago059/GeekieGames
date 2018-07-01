@@ -1,3 +1,4 @@
+#include <string>
 /*
 
     Structs utilizadas pelo programa
@@ -8,8 +9,9 @@ typedef struct _login_ {
 } login;
 
 typedef struct _exercicio_ {
-    char *titulo, *descricao, *categoria, *dificuldade; // dados do exercicio
-    char *caminho; // dados de em qual pasta serão salvos o arquivo
+    char *caminho;
+    std::string titulo, descricao;
+    const char *categoria, *dificuldade;
     bool resolvido;
     //const char *categoria;
 } exercicio;
@@ -36,5 +38,5 @@ void login_usuario();
 // Cadastro de exercícios
 void cadastrar_exercicio();
 const char *selecionar_categoria();
-char *selecionar_dificuldade();
+const char *selecionar_dificuldade();
 

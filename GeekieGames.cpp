@@ -1,13 +1,15 @@
 #include <iostream>
+#include <stdio.h>
 #include <fstream>
 #include <cstdlib>
+#include <string>
 #include <string.h>
 #include <time.h>
 #include "GeekieGames.h";
 
 using namespace std;
 
-// funções que ajudam as funções principais
+// Funções que ajudam as funções principais
 void esperar(int segundos){
     /* Faz o programa esperar e não fazer nada por X segundos. */
 	clock_t fim;
@@ -246,23 +248,47 @@ void cadastrar_exercicio(){
 
     cout << "Bem-vindo a tela de cadastro de exercicios!\n";
     cout << "Siga os seguintes passos para adicionar um novo exercicio.\n";
-    cout << "1. Primeiro, selecione a categoria do exercicio.";
 
     // selecionando uma categoria dentre uma lista
+    cout << "1. Primeiro, selecione a categoria do exercicio.";
     novoExercicio.categoria = selecionar_categoria();
-    cout << novoExercicio.categoria << endl;
 
     // mesma coisa, agora para a dificuldade
-    cout << "2. Agora selecione a dificuldade do exercicio.";
+    cout << "2. Agora, selecione a dificuldade do exercicio.";
     novoExercicio.dificuldade = selecionar_dificuldade();
-    cout << novoExercicio.dificuldade << endl;
+
+    /* Ao pressionar o enter na função anterior houve um salto para o proximo comando depois do getline
+    a seguir, ou seja, esse problema ocorre pois o comando ‘\n’ (quebra de linha) está no buffer fazendo
+    com que o comando getline interprete que é o final do caracter, por esse motivo é realizado um salto para o próximo comando.
+    Sempre usar cin.ignore apos digitar um enter que depois desse enter apareça um getline. */
+    cin.ignore();
+
+    // Lendo o titulo do exercicio
+    cout << "3. Pode digitar agora o titulo do exercicio.\nExemplos: 'Questao 7 Pag-12', 'Exercicio While Numero 27', etc).\nDigite: ";
+    getline(cin, novoExercicio.titulo);
 
 
+    // Lendo a descricao do exercicio
+    system("clear");
+    cout << "4. Para finalizar, digite uma descricao para seu exercicio.\n";
+    cout << "Exemplos: 'Qual a saida executada pelo seguinte programa?', 'Escreva um programa que faça isso[...]'\nDigite: ";
+    getline(cin, novoExercicio.descricao);
+
+    system("clear");
+    cout << "Novo exercicio cadastrado com sucesso!" << endl;
+    esperar(1);
+    cout << "Titulo: " << novoExercicio.titulo << endl;
+    esperar(1);
+    cout << "Descricao: "<< novoExercicio.descricao << endl;
+    esperar(1);
+    cout << "Categoria: " << novoExercicio.categoria << endl;
+    esperar(1);
+    cout << "Dificuldade: " << novoExercicio.dificuldade << endl;
 
 }
-char *selecionar_categoria(){
-    char *categoria;
-    unsigned opcao;
+const char *selecionar_categoria(){
+    const char *categoria;
+    int opcao;
 
     while (true) {
         cout << "\n\nSelecione a categoria: ";
@@ -271,7 +297,7 @@ char *selecionar_categoria(){
         cout << "Digite: ";
         cin >> opcao;
 
-        if ( (opcao < 0) && (opcao > 9) ){
+        if ( (opcao < 0) || (opcao > 9) ){
             system("clear");
             cout << "Categoria invalida. Tente novamente.";
             system("clear");
@@ -280,9 +306,14 @@ char *selecionar_categoria(){
         else {
             if (opcao == 0) menu_principal();
             else if (opcao == 1) categoria = "Sintaxe";
-            //else if (opcao == 2)
-            //else if (opcao == 3)
-            //else if (opcao == 4)
+            else if (opcao == 2) categoria = "Condicionais";
+            else if (opcao == 3) categoria = "Lacos de Repeticao";
+            else if (opcao == 4) categoria = "Vetores & Matrizes";
+            else if (opcao == 5) categoria = "Funcoes";
+            else if (opcao == 6) categoria = "Ponteiros";
+            else if (opcao == 7) categoria = "Strings";
+            else if (opcao == 8) categoria = "Estrutuas";
+            else if (opcao == 9) categoria = "Arquivos";
 
             system("clear");
             break;
@@ -292,8 +323,8 @@ char *selecionar_categoria(){
     return categoria;
 }
 
-char *selecionar_dificuldade(){
-    char *dificuldade;
+const char *selecionar_dificuldade(){
+    const char *dificuldade;
     unsigned opcao;
 
     while (true) {
@@ -302,10 +333,9 @@ char *selecionar_dificuldade(){
         cout << "Digite: ";
         cin >> opcao;
 
-        if ( (opcao < 0) && (opcao > 3) ){
+        if ( (opcao < 0) || (opcao > 3) ){
             system("clear");
             cout << "Dificuldade invalida. Tente novamente.";
-            system("clear");
             continue;
         }
         else {
