@@ -77,7 +77,8 @@ void menu_principal(){
     system("clear");
     cout << "Bem-vindo ao Recomenda Exercicios!";
     cout << "\nPor favor, digite uma opção:";
-    cout << "\n1 - Novo Usuario? Cadastre-se agora.\n2 - Ja tem cadastro? Efetue login.\n3 - Sair da aplicacao";
+    cout << "\n1 - Novo Usuario? Cadastre-se agora.\n2 - Ja tem cadastro? Efetue login.\n";
+    cout << "3 - Contribua! Cadastre um exercicio novo.\n4 - Sair da aplicacao";
     cout << "\nDigite: ";
 
     selecionar_opcao();
@@ -96,6 +97,9 @@ void selecionar_opcao(){
             login_usuario();
             break;
         case 3:
+            cadastrar_exercicio();
+            break;
+        case 4:
             exit(0);
             break;
         default:
@@ -234,4 +238,86 @@ void login_usuario(){
 
     }
 
+}
+
+void cadastrar_exercicio(){
+    system("clear");
+    exercicio novoExercicio; // criando um novo exercicio
+
+    cout << "Bem-vindo a tela de cadastro de exercicios!\n";
+    cout << "Siga os seguintes passos para adicionar um novo exercicio.\n";
+    cout << "1. Primeiro, selecione a categoria do exercicio.";
+
+    // selecionando uma categoria dentre uma lista
+    novoExercicio.categoria = selecionar_categoria();
+    cout << novoExercicio.categoria << endl;
+
+    // mesma coisa, agora para a dificuldade
+    cout << "2. Agora selecione a dificuldade do exercicio.";
+    novoExercicio.dificuldade = selecionar_dificuldade();
+    cout << novoExercicio.dificuldade << endl;
+
+
+
+}
+char *selecionar_categoria(){
+    char *categoria;
+    unsigned opcao;
+
+    while (true) {
+        cout << "\n\nSelecione a categoria: ";
+        cout << "\n1 - Sintaxe\n2 - Condicionais\n3 - Lacos de Repeticao\n4 - Vetores & Matrizes";
+        cout << "\n5 - Funcoes\n6 - Ponteiros\n7 - Strings\n8 - Estruturas\n9 - Arquivos\n0 - Retornar ao menu principal\n";
+        cout << "Digite: ";
+        cin >> opcao;
+
+        if ( (opcao < 0) && (opcao > 9) ){
+            system("clear");
+            cout << "Categoria invalida. Tente novamente.";
+            system("clear");
+            continue;
+        }
+        else {
+            if (opcao == 0) menu_principal();
+            else if (opcao == 1) categoria = "Sintaxe";
+            //else if (opcao == 2)
+            //else if (opcao == 3)
+            //else if (opcao == 4)
+
+            system("clear");
+            break;
+        }
+    }
+
+    return categoria;
+}
+
+char *selecionar_dificuldade(){
+    char *dificuldade;
+    unsigned opcao;
+
+    while (true) {
+        cout << "\n\nSelecione a dificuldade: ";
+        cout << "\n1 - Facil\n2 - Medio\n3 - Dificil\n0 - Retornar ao menu principal\n";
+        cout << "Digite: ";
+        cin >> opcao;
+
+        if ( (opcao < 0) && (opcao > 3) ){
+            system("clear");
+            cout << "Dificuldade invalida. Tente novamente.";
+            system("clear");
+            continue;
+        }
+        else {
+            if (opcao == 0) menu_principal();
+            else if (opcao == 1) dificuldade = "Facil";
+            else if (opcao == 2) dificuldade = "Medio";
+            else if (opcao == 3) dificuldade = "Dificil";
+
+            system("clear");
+            break;
+        }
+    }
+
+    return dificuldade;
 }
