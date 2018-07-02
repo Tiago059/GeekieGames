@@ -9,7 +9,7 @@ typedef struct _login_ {
 } login;
 
 typedef struct _exercicio_ {
-    char *caminho;
+    char caminho[50];
     std::string titulo, descricao;
     const char *categoria, *dificuldade;
     bool resolvido;

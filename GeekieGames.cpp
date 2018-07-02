@@ -274,9 +274,35 @@ void cadastrar_exercicio(){
     cout << "Exemplos: 'Qual a saida executada pelo seguinte programa?', 'Escreva um programa que faça isso[...]'\nDigite: ";
     getline(cin, novoExercicio.descricao);
 
+    // Finalmente, salvando as devidas informações no arquivo de texto
+    fstream arquivo;
+    /* Criando o caminho de onde o arquivo será salvo, com base na categoria e dificuldade
+    Padrão: database/categoria/categoria-dificuldade.txt */
+    strcat(novoExercicio.caminho, "database/exercicios/");
+    strcat(novoExercicio.caminho, novoExercicio.categoria);
+    strcat(novoExercicio.caminho, "/");
+    strcat(novoExercicio.caminho, novoExercicio.categoria);
+    strcat(novoExercicio.caminho, "-");
+    strcat(novoExercicio.caminho, novoExercicio.dificuldade);
+    strcat(novoExercicio.caminho, ".txt");
+
+    const char *bunda = novoExercicio.caminho;
+    // database/exercicios/Sintaxe/Sintaxe-Facil.txt
+
+    // Gravando as informações. Note que sempre termina com um '\n'.
+    arquivo.open(bunda, ios::out|ios::app);
+    arquivo << novoExercicio.titulo << "\n";
+    arquivo << novoExercicio.descricao << "\n";
+    arquivo << novoExercicio.categoria << "\n";
+    arquivo << novoExercicio.dificuldade << "\n";
+    arquivo << "\n";
+    arquivo.close();
+
+    // Exibindo para o usuario que deu tudo certo
     system("clear");
     cout << "Novo exercicio cadastrado com sucesso!" << endl;
     esperar(1);
+    cout << bunda << endl;
     cout << "Titulo: " << novoExercicio.titulo << endl;
     esperar(1);
     cout << "Descricao: "<< novoExercicio.descricao << endl;
