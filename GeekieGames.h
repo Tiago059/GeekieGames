@@ -9,11 +9,10 @@ typedef struct _login_ {
 } login;
 
 typedef struct _exercicio_ {
-    char caminho[50];
-    std::string titulo, descricao;
+    char *caminho;
     const char *categoria, *dificuldade;
+    std::string titulo, descricao;
     bool resolvido;
-    //const char *categoria;
 } exercicio;
 
 /*
@@ -39,4 +38,7 @@ void login_usuario();
 void cadastrar_exercicio();
 const char *selecionar_categoria();
 const char *selecionar_dificuldade();
+
+// Exibição de exercícios para o usuário
+void menu_exercicios(login login);
 

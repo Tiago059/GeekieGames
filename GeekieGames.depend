@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1528833419 source:/home/italo-tiago/Documentos/Codigos_de_LP_2018.1/GeekieGames/GeekieGames.cpp
+1528909244 source:/home/italo-tiago/Documentos/Codigos_de_LP_2018.1/GeekieGames/GeekieGames.cpp
 	<iostream>
 	<cstdlib>
 	<string.h>
@@ -7,9 +7,25 @@
 	<time.h>
 	"GeekieGames.h"
 
-1528853327 source:/home/italo-tiago/Documentos/Codigos_de_LP_2018.1/GeekieGames/main.cpp
+1529515991 source:/home/italo-tiago/Documentos/Codigos_de_LP_2018.1/GeekieGames/main.cpp
 	<iostream>
 	"GeekieGames.h"
 
 1528830268 /home/italo-tiago/Documentos/Codigos_de_LP_2018.1/GeekieGames/GeekieGames.h
+
+1530416624 source:/home/italo-tiago/Documentos/Codigos_de_LP_2018.1/Projetos/GeekieGames/main.cpp
+	"GeekieGames.h"
+
+1530930270 /home/italo-tiago/Documentos/Codigos_de_LP_2018.1/Projetos/GeekieGames/GeekieGames.h
+	<string>
+
+1530933340 source:/home/italo-tiago/Documentos/Codigos_de_LP_2018.1/Projetos/GeekieGames/GeekieGames.cpp
+	<iostream>
+	<stdio.h>
+	<fstream>
+	<cstdlib>
+	<string>
+	<string.h>
+	<time.h>
+	"GeekieGames.h"
 

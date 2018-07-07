@@ -79,8 +79,7 @@ void menu_principal(){
     system("clear");
     cout << "Bem-vindo ao Recomenda Exercicios!";
     cout << "\nPor favor, digite uma opção:";
-    cout << "\n1 - Novo Usuario? Cadastre-se agora.\n2 - Ja tem cadastro? Efetue login.\n";
-    cout << "3 - Contribua! Cadastre um exercicio novo.\n4 - Sair da aplicacao";
+    cout << "\n1 - Novo Usuario? Cadastre-se agora.\n2 - Ja tem cadastro? Efetue login.\n0 - Sair da Aplicacao\n";
     cout << "\nDigite: ";
 
     selecionar_opcao();
@@ -98,10 +97,7 @@ void selecionar_opcao(){
         case 2:
             login_usuario();
             break;
-        case 3:
-            cadastrar_exercicio();
-            break;
-        case 4:
+        case 0:
             exit(0);
             break;
         default:
@@ -121,7 +117,7 @@ void cadastrar_usuario(){
 
     // adquirindo o nome de usuário
     while (true){
-        cout << "Digite um nome de usuario que voce queira. \nPode usar qualquer simbolo exceto o '*', '/' ou espacos em branco: ";
+        cout << "Digite um nome de usuario que voce queira. \nPode usar qualquer simbolo exceto o '*' ou '/':";
         cin >> usuario.nome;
         // cin.getline(usuario.nome)
 
@@ -204,32 +200,33 @@ void login_usuario(){
         portanto, ao chamar a função mais de uma vez, ele irá procurar a partir
         do novo valor de posBuscaX */
         // separando os logins e fazendo a checagem
-        while (posBusca1 < strlen(buffer)){
-            // separando um login (nome e senha juntos)
-            string1 = split(buffer, '/', &posBusca1);
-            cout << string1 << endl;
-            // separando o nome
-            string2 = split(string1, '*', &posBusca2);
-            cout << string2 << endl;
-            // separando a senha
-            string3 = split(string1, '*', &posBusca2);
-            cout << string3 << endl;
-            // comparando se a senha e o nome batem
-            if ( (strcmp(usuario.nome, string2) == 0) && (strcmp(usuario.senha, string3) == 0) ) {
-                achou = true;
-                break;
+        // fazendo a checagem inicial se o usuario é o queridissimo adminstrador
+        if ( (strcmp(usuario.nome, "admin") == 0) && (strcmp(usuario.senha, "admin") == 0) ) {
+            cadastrar_exercicio();
+        }
+        else {
+            while (posBusca1 < strlen(buffer)){
+                // separando um login (nome e senha juntos)
+                string1 = split(buffer, '/', &posBusca1);
+                cout << string1 << endl;
+                // separando o nome
+                string2 = split(string1, '*', &posBusca2);
+                cout << string2 << endl;
+                // separando a senha
+                string3 = split(string1, '*', &posBusca2);
+                cout << string3 << endl;
+                // comparando se a senha e o nome batem
+                if ( (strcmp(usuario.nome, string2) == 0) && (strcmp(usuario.senha, string3) == 0) ) {
+                    achou = true;
+                    break;
+                }
+                posBusca2 = 0; // para sempre procurar desde o inicio da substring, a cada interação
             }
-             posBusca2 = 0; // para sempre procurar desde o inicio da substring, a cada interação
         }
 
+
         // mostrando pro usuario se ele conseguiu logar ou não
-        if (achou){
-            system("clear");
-            cout << "LOGADO COM SUCESSO";
-            esperar(2);
-            system("clear");
-            // menu_exercicios();
-        }
+        if (achou) menu_exercicios(usuario); // retornando o usuário atual para a função do menu de exercícios.
         else {
             system("clear");
             cout << "Usuario e/ou senha invalidos. Tente novamente.\n";
@@ -246,15 +243,13 @@ void cadastrar_exercicio(){
     system("clear");
     exercicio novoExercicio; // criando um novo exercicio
 
-    cout << "Bem-vindo a tela de cadastro de exercicios!\n";
-    cout << "Siga os seguintes passos para adicionar um novo exercicio.\n";
-
+    cout << "Bem-vindo a tela de cadastro de exercicios, adminstrador.\n";
     // selecionando uma categoria dentre uma lista
-    cout << "1. Primeiro, selecione a categoria do exercicio.";
+    cout << "1. Selecione a categoria do exercicio.";
     novoExercicio.categoria = selecionar_categoria();
 
     // mesma coisa, agora para a dificuldade
-    cout << "2. Agora, selecione a dificuldade do exercicio.";
+    cout << "2. Selecione a dificuldade do exercicio.";
     novoExercicio.dificuldade = selecionar_dificuldade();
 
     /* Ao pressionar o enter na função anterior houve um salto para o proximo comando depois do getline
@@ -264,20 +259,22 @@ void cadastrar_exercicio(){
     cin.ignore();
 
     // Lendo o titulo do exercicio
-    cout << "3. Pode digitar agora o titulo do exercicio.\nExemplos: 'Questao 7 Pag-12', 'Exercicio While Numero 27', etc).\nDigite: ";
+    cout << "3. Digite o titulo do exercicio.\nDigite: ";
     getline(cin, novoExercicio.titulo);
-
 
     // Lendo a descricao do exercicio
     system("clear");
-    cout << "4. Para finalizar, digite uma descricao para seu exercicio.\n";
-    cout << "Exemplos: 'Qual a saida executada pelo seguinte programa?', 'Escreva um programa que faça isso[...]'\nDigite: ";
+    cout << "4. Digite a descricao do exercicio.\n";
     getline(cin, novoExercicio.descricao);
 
     // Finalmente, salvando as devidas informações no arquivo de texto
     fstream arquivo;
-    /* Criando o caminho de onde o arquivo será salvo, com base na categoria e dificuldade
-    Padrão: database/categoria/categoria-dificuldade.txt */
+    /* Criando o caminho de onde o arquivo será salvo, com base na categoria e dificuldade */
+
+    /* alocando um novo vetor para guardar a extensão do arquivo de texto. Os 26 se referem a soma das strings constantes
+    vistas aí no código, mais o tamanho da categoria e da dificuldade, e depois mais 1 para nao estourar o vetor */
+    novoExercicio.caminho = new char[(26 + (strlen(novoExercicio.categoria)*2) + strlen(novoExercicio.dificuldade) + 1)];
+    //Formato padrão do caminho: database/categoria/categoria-dificuldade.txt
     strcat(novoExercicio.caminho, "database/exercicios/");
     strcat(novoExercicio.caminho, novoExercicio.categoria);
     strcat(novoExercicio.caminho, "/");
@@ -285,12 +282,10 @@ void cadastrar_exercicio(){
     strcat(novoExercicio.caminho, "-");
     strcat(novoExercicio.caminho, novoExercicio.dificuldade);
     strcat(novoExercicio.caminho, ".txt");
+    // AO final disso, novoExercicio caminho deverá ter algo como: "database/exercicios/Sintaxe/Sintaxe-Facil.txt"
 
-    const char *bunda = novoExercicio.caminho;
-    // database/exercicios/Sintaxe/Sintaxe-Facil.txt
-
-    // Gravando as informações. Note que sempre termina com um '\n'.
-    arquivo.open(bunda, ios::out|ios::app);
+    // Finalmente, gravando o exercício no arquivo de texto. Note que sempre termina com um '\n', o nosso novo delimitador.
+    arquivo.open(novoExercicio.caminho, ios::out|ios::app);
     arquivo << novoExercicio.titulo << "\n";
     arquivo << novoExercicio.descricao << "\n";
     arquivo << novoExercicio.categoria << "\n";
@@ -302,7 +297,8 @@ void cadastrar_exercicio(){
     system("clear");
     cout << "Novo exercicio cadastrado com sucesso!" << endl;
     esperar(1);
-    cout << bunda << endl;
+    cout << "Exercicio alterado em: " << novoExercicio.caminho << endl;
+    esperar(1);
     cout << "Titulo: " << novoExercicio.titulo << endl;
     esperar(1);
     cout << "Descricao: "<< novoExercicio.descricao << endl;
@@ -311,7 +307,29 @@ void cadastrar_exercicio(){
     esperar(1);
     cout << "Dificuldade: " << novoExercicio.dificuldade << endl;
 
+    // deletando nosso vetor caminho, pois usuaremos ele na proxima execução do programa.
+    delete novoExercicio.caminho;
+
+    // um swtichzinho só para facilitar o cadastro de vários exercícios
+    cout << "\n\nCadastrar novo exercicio?(S/N)?\nDigite: ";
+    char opcao;
+    cin >> opcao;
+    switch (opcao){
+        case 'S':
+        case 's':
+            cadastrar_exercicio();
+            break;
+        case 'N':
+        case 'n':
+            menu_principal();
+            break;
+        default:
+            cout << "Opcao invalida.";
+
+    }
+
 }
+
 const char *selecionar_categoria(){
     const char *categoria;
     int opcao;
@@ -376,4 +394,55 @@ const char *selecionar_dificuldade(){
     }
 
     return dificuldade;
+}
+
+void menu_exercicios(login usuarioAtual){
+    system("clear");
+    unsigned opcao;
+    const char *categoriaEscolhida, *dificuldadeEscolhida;
+    ifstream arquivo;
+    string linha;
+
+    cout << "Bem-vindo a tela de visualizacao de exercicios, " << usuarioAtual.nome << "!";
+    cout << "\nSelecione uma das opcoes a seguir: ";
+    cout << "\n1 - Visualizar exercicios aleatoriamente por categoria/dificuldade";
+    cout << "\n2 - Exibir Ajuda";
+    cout << "\n3 - Logoff & Retornar ao Menu Principal";
+    cout << "\nDigite: ";
+    cin >> opcao;
+
+    switch (opcao){
+        case 1:
+            // Escolhendo a categoria e a dificuldade para saber qual arquivo de exercicios deverá ser lido
+            cout << "\nEscolha uma categoria de exercicios: ";
+            categoriaEscolhida = selecionar_categoria();
+            cout << "Escolha uma dificuldade dos exercicios: ";
+            dificuldadeEscolhida = selecionar_dificuldade();
+
+            cout << "\n";
+            cout << categoriaEscolhida << "  " << dificuldadeEscolhida;
+            break;
+        case 2:
+            // Exibindo o arquivo de ajuda para o usuário. Nada demais.
+            arquivo.open("database/help.txt");
+            // lendo o arquivo de texto ate o fim dele
+            while (!arquivo.eof()){
+                getline(arquivo, linha);
+                cout << linha << endl;
+            }
+            arquivo.close();
+            system("read -p '\nAperte qualquer tecla para voltar:' var"); // para o linux. no windows, use system("pause")
+            menu_exercicios(usuarioAtual);
+            break;
+        case 3:
+            system("clear");
+            cout << "Ate a proxima, " << usuarioAtual.nome << "!";
+            menu_principal();
+            break;
+        default:
+            system("clear");
+            cout << "Opcao invalida. Tente novamente.";
+            menu_exercicios(usuarioAtual);
+    }
+
 }
