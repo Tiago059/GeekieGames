@@ -16,14 +16,15 @@
 1530416624 source:/home/italo-tiago/Documentos/Codigos_de_LP_2018.1/Projetos/GeekieGames/main.cpp
 	"GeekieGames.h"
 
-1530930270 /home/italo-tiago/Documentos/Codigos_de_LP_2018.1/Projetos/GeekieGames/GeekieGames.h
+1531065306 /home/italo-tiago/Documentos/Codigos_de_LP_2018.1/Projetos/GeekieGames/GeekieGames.h
 	<string>
 
-1530933340 source:/home/italo-tiago/Documentos/Codigos_de_LP_2018.1/Projetos/GeekieGames/GeekieGames.cpp
+1531065397 source:/home/italo-tiago/Documentos/Codigos_de_LP_2018.1/Projetos/GeekieGames/GeekieGames.cpp
 	<iostream>
 	<stdio.h>
 	<fstream>
 	<cstdlib>
+	<stdlib.h>
 	<string>
 	<string.h>
 	<time.h>

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <fstream>
 #include <cstdlib>
+#include <stdlib.h>
 #include <string>
 #include <string.h>
 #include <time.h>
@@ -15,6 +16,10 @@ void esperar(int segundos){
 	clock_t fim;
 	fim = clock () + segundos * CLOCKS_PER_SEC;
 	while (clock() < fim) {}
+}
+
+inline const char * const BoolToString(bool b) { // funcao que "converte" valor booleano para string
+   return b ? "true" : "false";
 }
 
 int buscaCaractere(char *stringue, char busca){
@@ -73,13 +78,18 @@ char *split(char *stringue, char delimitador, unsigned *posicao){
 
 }
 
+int aleatorio(int min, int max){
+    srand(time(NULL));
+    return (rand()% (max - min + 1) + min);
+}
 // funções principais
 void menu_principal(){
 
     system("clear");
     cout << "Bem-vindo ao Recomenda Exercicios!";
     cout << "\nPor favor, digite uma opção:";
-    cout << "\n1 - Novo Usuario? Cadastre-se agora.\n2 - Ja tem cadastro? Efetue login.\n0 - Sair da Aplicacao\n";
+    cout << "\n1 - Novo Usuario? Cadastre-se agora.\n2 - Ja tem cadastro? Efetue login.\n";
+    cout << "3 - Ajuda\n0 - Sair da Aplicacao\n";
     cout << "\nDigite: ";
 
     selecionar_opcao();
@@ -97,6 +107,9 @@ void selecionar_opcao(){
         case 2:
             login_usuario();
             break;
+        case 3:
+            exibirAjuda();
+            menu_principal();
         case 0:
             exit(0);
             break;
@@ -288,8 +301,8 @@ void cadastrar_exercicio(){
     arquivo.open(novoExercicio.caminho, ios::out|ios::app);
     arquivo << novoExercicio.titulo << "\n";
     arquivo << novoExercicio.descricao << "\n";
-    arquivo << novoExercicio.categoria << "\n";
-    arquivo << novoExercicio.dificuldade << "\n";
+    //arquivo << novoExercicio.categoria << "\n";
+    //arquivo << novoExercicio.dificuldade << "\n";
     arquivo << "\n";
     arquivo.close();
 
@@ -337,8 +350,8 @@ const char *selecionar_categoria(){
     while (true) {
         cout << "\n\nSelecione a categoria: ";
         cout << "\n1 - Sintaxe\n2 - Condicionais\n3 - Lacos de Repeticao\n4 - Vetores & Matrizes";
-        cout << "\n5 - Funcoes\n6 - Ponteiros\n7 - Strings\n8 - Estruturas\n9 - Arquivos\n0 - Retornar ao menu principal\n";
-        cout << "Digite: ";
+        cout << "\n5 - Funcoes\n6 - Ponteiros\n7 - Strings\n8 - Estruturas\n9 - Arquivos";
+        cout << "\nDigite: ";
         cin >> opcao;
 
         if ( (opcao < 0) || (opcao > 9) ){
@@ -347,9 +360,8 @@ const char *selecionar_categoria(){
             system("clear");
             continue;
         }
-        else {
-            if (opcao == 0) menu_principal();
-            else if (opcao == 1) categoria = "Sintaxe";
+        else { // substituir por switch
+            if (opcao == 1) categoria = "Sintaxe";
             else if (opcao == 2) categoria = "Condicionais";
             else if (opcao == 3) categoria = "Lacos de Repeticao";
             else if (opcao == 4) categoria = "Vetores & Matrizes";
@@ -373,8 +385,8 @@ const char *selecionar_dificuldade(){
 
     while (true) {
         cout << "\n\nSelecione a dificuldade: ";
-        cout << "\n1 - Facil\n2 - Medio\n3 - Dificil\n0 - Retornar ao menu principal\n";
-        cout << "Digite: ";
+        cout << "\n1 - Facil\n2 - Medio\n3 - Dificil";
+        cout << "\nDigite: ";
         cin >> opcao;
 
         if ( (opcao < 0) || (opcao > 3) ){
@@ -382,9 +394,8 @@ const char *selecionar_dificuldade(){
             cout << "Dificuldade invalida. Tente novamente.";
             continue;
         }
-        else {
-            if (opcao == 0) menu_principal();
-            else if (opcao == 1) dificuldade = "Facil";
+        else { // também trocar por switch
+            if (opcao == 1) dificuldade = "Facil";
             else if (opcao == 2) dificuldade = "Medio";
             else if (opcao == 3) dificuldade = "Dificil";
 
@@ -396,12 +407,30 @@ const char *selecionar_dificuldade(){
     return dificuldade;
 }
 
-void menu_exercicios(login usuarioAtual){
+void exibirAjuda(){
     system("clear");
-    unsigned opcao;
-    const char *categoriaEscolhida, *dificuldadeEscolhida;
     ifstream arquivo;
     string linha;
+
+    // Exibindo o arquivo de ajuda para o usuário. Nada demais.
+    arquivo.open("database/help.txt");
+    // lendo o arquivo de texto ate o fim dele
+    while (!arquivo.eof()){
+        getline(arquivo, linha);
+        cout << linha << endl;
+    }
+    arquivo.close();
+    system("read -p '\nAperte qualquer tecla para retornar:' var"); // para o linux. no windows, use system("pause")
+}
+void menu_exercicios(login usuarioAtual){
+    system("clear");
+    unsigned opcao, quantExercicios = 0, i;
+    int numero, anterior = -1;
+    const char *categoriaEscolhida, *dificuldadeEscolhida;
+    char *caminhoExercicio;
+    exercicio *listaExercicios;
+    ifstream arquivo;
+    string linha, linha2, linha3;
 
     cout << "Bem-vindo a tela de visualizacao de exercicios, " << usuarioAtual.nome << "!";
     cout << "\nSelecione uma das opcoes a seguir: ";
@@ -413,36 +442,138 @@ void menu_exercicios(login usuarioAtual){
 
     switch (opcao){
         case 1:
+            system("clear");
             // Escolhendo a categoria e a dificuldade para saber qual arquivo de exercicios deverá ser lido
-            cout << "\nEscolha uma categoria de exercicios: ";
+            cout << "Escolha uma categoria de exercicios: ";
             categoriaEscolhida = selecionar_categoria();
             cout << "Escolha uma dificuldade dos exercicios: ";
             dificuldadeEscolhida = selecionar_dificuldade();
 
-            cout << "\n";
-            cout << categoriaEscolhida << "  " << dificuldadeEscolhida;
+            // definindo qual arquivo de exercicios sera lido
+            caminhoExercicio = new char[(26 + (strlen(categoriaEscolhida)*2) + strlen(dificuldadeEscolhida) + 1)];
+            //Formato padrão do caminho: database/categoria/categoria-dificuldade.txt
+            strcat(caminhoExercicio, "database/exercicios/");
+            strcat(caminhoExercicio, categoriaEscolhida);
+            strcat(caminhoExercicio, "/");
+            strcat(caminhoExercicio, categoriaEscolhida);
+            strcat(caminhoExercicio, "-");
+            strcat(caminhoExercicio, dificuldadeEscolhida);
+            strcat(caminhoExercicio, ".txt");
+
+            arquivo.open(caminhoExercicio, ios::binary); // abrindo nosso maravilhoso arquivo
+            // contando quantos exercicios ha no arquivo de texto escolhido
+            do {
+                if (!arquivo.is_open()){ // checando primeiramente se o arquivo existe, ou seja, se ele existe entao ele está aberto
+                    system("clear");
+                    esperar(1.5);
+                    cout << "Desculpe, nao ha nenhum exercicio cadastrado com essa categoria e/ou dificuldade.\n";
+                    system("clear");
+                    menu_exercicios(usuarioAtual);
+                    break;
+                }
+                else {
+                    getline(arquivo, linha);
+                    if (linha.length() == 0) quantExercicios++; // significa que ele encontrou o delimitador
+                }
+            } while(!arquivo.eof());
+
+            // gravando os exercicios no vetor de exercicios
+            quantExercicios--; /* como o delimitador é o \n, no final da execução o quantExercicios ficara com 1 a mais */
+            listaExercicios = new exercicio[quantExercicios]; // alocando nosso vetorzinho de exercicios
+
+            /* Fechando o arquivo e abrindo-o novamente. Porque? Para fazer o ponteiro do arquivo retornar a posicao do inicio
+            do arquivo. Mas porque voce nao usa seekg()? Porque seekg funciona em arquivo aberto em modo binario, e ai né,
+            nao tem como eu extrair a string de um arquivo aberto em modo binario. */
+            arquivo.close();
+            arquivo.open(caminhoExercicio, ios::in);
+
+            for (i = 0; i < quantExercicios; i++){
+                getline(arquivo, linha); // pegando a primeira linha, o titulo
+                listaExercicios[i].titulo = linha;
+                getline(arquivo, linha2); // pegando a segunda linha, a descricao
+                listaExercicios[i].descricao = linha2;
+
+                listaExercicios[i].categoria = categoriaEscolhida; // pegando a categoria e a dificuldade escolhida antes
+                listaExercicios[i].dificuldade = dificuldadeEscolhida;
+
+                listaExercicios[i].resolvido = false; // valor padrão, pois o usuario ainda nao marcou como resolvida
+
+                getline(arquivo, linha3); /* serve apenas para pular uma linha para a proxima linha do arquivo,
+                já que nessa linha encontra-se o delimitador, fazendo ir ao proximo bloco de exercicios */
+            }
+
+            // exibindo os exercicios para o usuario, aleatoriamente
+            numero = aleatorio(0, quantExercicios-1);
+            exibir_exercicios(numero, anterior, quantExercicios, listaExercicios, usuarioAtual);
+
+            arquivo.close();
+            exit(0);
             break;
         case 2:
-            // Exibindo o arquivo de ajuda para o usuário. Nada demais.
-            arquivo.open("database/help.txt");
-            // lendo o arquivo de texto ate o fim dele
-            while (!arquivo.eof()){
-                getline(arquivo, linha);
-                cout << linha << endl;
-            }
-            arquivo.close();
-            system("read -p '\nAperte qualquer tecla para voltar:' var"); // para o linux. no windows, use system("pause")
+            exibirAjuda();
             menu_exercicios(usuarioAtual);
             break;
         case 3:
-            system("clear");
-            cout << "Ate a proxima, " << usuarioAtual.nome << "!";
             menu_principal();
             break;
         default:
             system("clear");
             cout << "Opcao invalida. Tente novamente.";
             menu_exercicios(usuarioAtual);
+    }
+
+}
+
+void exibir_exercicios(int numero, int anterior, int quantExercicios, exercicio *exercicios, login usuario){
+    system("clear");
+    unsigned opcao;
+    while (numero == anterior) numero = aleatorio(0, quantExercicios-1); // pra garantir que um mesmo exercicio não se repita
+
+    cout << "\t\t\t\tExercicio Nº " << numero+1 << endl;
+    cout << "Titulo: " << exercicios[numero].titulo << endl;
+    cout << "Enunciado: " << exercicios[numero].descricao << "\n\n";
+
+    cout << "Selecione uma opcao:";
+    cout << "\n1 - Proximo Exercicio\t2 - Exercicio Anterior";
+    cout << "\n3 - Marcar como visualizada\t4 - Reverter as visualizacoes";
+    cout << "\n5 - Voltar ao menu de exercicios\t6 - Voltar ao menu prinicipal (Logoff)";
+    cout << "\nDigite: ";
+    cin >> opcao;
+
+    switch (opcao) {
+        case 1:
+            anterior = numero; // guardando o exercicio anterior
+            numero = aleatorio(0, quantExercicios-1); // e gerando um novo exercicio aleatorio
+            exibir_exercicios(numero, anterior, quantExercicios, exercicios, usuario);
+            break;
+        case 2:
+            if (anterior == -1) {
+                system("clear");
+                cout << "Opcao invalida (inicio do programa). \n";
+                esperar(1.5);
+                exibir_exercicios(numero, anterior, quantExercicios, exercicios, usuario); // chamando novamente a funcao com o mesmo numero
+            }
+            else exibir_exercicios(anterior, numero, quantExercicios, exercicios, usuario); // imprimindo o exercicio anterior
+            break;
+        case 3:
+            cout << "em desenvolvimento...";
+            exit(0);
+            break;
+        case 4:
+            cout << "em desenvolvimento...";
+            exit(0);
+            break;
+        case 5:
+            menu_exercicios(usuario);
+            break;
+        case 6:
+            menu_principal();
+            break;
+        default:
+            system("clear");
+            cout << "Opcao invalida.\n";
+            esperar(1.5);
+            exibir_exercicios(numero, anterior, quantExercicios, exercicios, usuario);
     }
 
 }
