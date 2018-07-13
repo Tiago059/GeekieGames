@@ -31,11 +31,8 @@ int buscaCaractere(char *stringue, char busca){
     bool achou = false;
     unsigned i;
 
-    char *p;
-    p = strstr(stringue, " ");
-
     for (i = 0;i < strlen(stringue);i++){
-        if( (stringue[i] == busca) || (p != NULL) ){
+        if (stringue[i] == busca) {
             achou = true;
             break;
         }

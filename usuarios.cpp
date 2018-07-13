@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -26,55 +27,54 @@ que já está poluído) este arquivo.
 
 void cadastrar_usuario(){
     system("clear");
+    cout << "Bem-vindo a tela de cadastro de novos usuarios!(Tecle enter se nada aparecer)\n" << endl;
     login usuario; // Struct que receberá o login (nome + senha)
+    fstream arquivo;
+    char opcao;
 
-    cout << "Bem-vindo a tela de cadastro de novos usuarios!\n" << endl;
+    // Criando/acessando o arquivo de login
+    arquivo.open("database/logins.txt", ios::out|ios::app);
+    arquivo.close();
 
     // Adquirindo o nome de usuário
     while (true){
-        cout << "Digite um nome de usuario que voce queira. \nPode usar qualquer simbolo exceto o '*' ou '/': ";
-        cin >> usuario.nome;
+        cout << "Digite um nome de usuario que voce queira.\nPode usar qualquer simbolo exceto o '*' ou '/': ";
+        scanf("%[^\n]", usuario.nome);
 
         // Verificando se o nome é válido, e irá continuar nesse loop até que o usuário digite corretamente.
-        if(((buscaCaractere(usuario.nome, '*')) + (buscaCaractere(usuario.nome, '/')) + (buscaCaractere(usuario.nome, ' '))) != 0){
-            cout << "Entrada invalida. Digite novamente.\n";
-            esperar(2);
+        if( ( buscaCaractere(usuario.nome, '*') + buscaCaractere(usuario.nome, '/')  ) != 0){
+            cout << "Nome de usuario invalido. Digite novamente.\n";
+            esperar(1.5);
             system("clear");
          }
-         else {
-            break;
-         }
+         else break;
     }
 
-    // Gravando o nome do usuário no arquivo de texto
-    fstream arquivo;
+    cout << "\n";
 
     // Adquirindo a senha do usuário
     while (true){
-        cout << "Digite uma senha. \nEla tambem nao pode conter '*', '/' ou espacos em branco: ";
-        cin >> usuario.senha;
+        cout << "Digite uma senha.\nEla tambem nao pode conter '*' ou '/': ";
+        scanf("%[^\n]", usuario.senha);
+        //cin >> usuario.senha;
 
         // Verificando se a senha é válida, do mesmo jeitinho
-        if(((buscaCaractere(usuario.senha, '*')) + (buscaCaractere(usuario.senha, '/')) + (buscaCaractere(usuario.senha, ' '))) != 0){
-            cout << "Entrada invalida. Digite novamente.\n";
-            esperar(2);
+        if( ( buscaCaractere(usuario.senha, '*') + buscaCaractere(usuario.senha, '/') ) != 0){
+            cout << "Senha invalida. Digite novamente.\n";
+            esperar(1.5);
             system("clear");
          }
-         else {
-            break;
-         }
-
+         else break;
     }
-
 
     // Checando se o usuário quer cadastrar com um nome de usuário que já está cadastrado
     arquivo.open("database/logins.txt", ios::in);
     unsigned posBusca1 = 0, posBusca2 = 0;
     string linha;
     char *buffer, *stringLinha, *stringNome;
-    getline(arquivo, linha);
 
     // "Convertendo" a string para um tipo mais "palpável", char
+    getline(arquivo, linha);
     buffer = new char[linha.length()];
     strcpy(buffer, linha.c_str());
 
@@ -86,9 +86,22 @@ void cadastrar_usuario(){
         stringNome = split(stringLinha, '*', &posBusca2);
 
         // Comparando se nome digitado está no arquivo
-        if ( (strcmp(usuario.nome, stringNome) == 0) ) {
+        if ( (strcmp(usuario.nome, stringNome) == 0) || (strcmp(usuario.nome, "admin") == 0) ){
             system("clear");
-            cout << "O usuario " << usuario.nome << " ja esta cadastrado. Tente outro nome. \n";
+            cout << "O nome de usuario " << usuario.nome << " ja esta cadastrado ou não pode ser usado.\n";
+            // Um swtichzinho só para facilitar o erro do nosso querido usuário
+            cout << "Tentar novamente?(S para sim, qualquer outra tecla para voltar ao menu principal)\nDigite: ";
+            cin >> opcao;
+            switch (opcao){
+                case 'S':
+                case 's':
+                    system("clear");
+                    cadastrar_exercicio();
+                    break;
+                default:
+                    system("clear");
+                    menu_principal();
+            }
             esperar(2);
             system("clear");
             cadastrar_usuario();
@@ -103,11 +116,11 @@ void cadastrar_usuario(){
     arquivo << usuario.senha << "/";        // O / é o delimitador que separa cada LOGIN (nome + senha) do outro
     arquivo.close();
 
-    // Mostrando pro usuário as informações digitadas
+    // Confirmando pro usuário as informações digitadas
     cout << "\nLogin: " << usuario.nome << endl;
     cout << "Senha: " << usuario.senha << endl;
     cout << "Cadastrado com sucesso!\n";
-    esperar(2);
+    esperar(2); // Delay de leve para dar tempo do usuário ver
     system("clear");
 
     // Chamando o menu principal novamente, saindo da tela de cadastro
@@ -120,7 +133,7 @@ void login_usuario(){
     string linha; // String que guarda os dados do arquivo de texto
     fstream arquivo;
     bool achou = false; // Flag pra saber se o login foi valido ou nao
-    char *stringLinha, *stringNome, *stringSenha, *buffer; // Strings que guardarão cada parte do login
+    char *stringLinha, *stringNome, *stringSenha, *buffer, opcao; // Strings que guardarão cada parte do login e outros
     unsigned posBusca1 = 0, posBusca2 = 0; /* preciso de dois posBuscas e dois strings porque vou dividir
     minha string duas vezes atraves dois delimitadores diferentes */
 
@@ -175,10 +188,21 @@ void login_usuario(){
         if (achou) menu_exercicios(usuario); // Retornando o usuário atual para a função do menu de exercícios.
         else {
             system("clear");
-            cout << "Usuario e/ou senha invalidos. Tente novamente.\n";
-            esperar(2);
-            system("clear");
-            login_usuario(); // Chamando novamente a própria função até que o usuário digite o login correto ou saia da aplicação
+            cout << "Usuario e/ou senha invalidos. \n";
+
+            // Um swtichzinho só para facilitar o erro do nosso querido usuário
+            cout << "Tentar novamente?(S para sim, qualquer outra tecla para voltar ao menu principal)\nDigite: ";
+            cin >> opcao;
+            switch (opcao){
+                case 'S':
+                case 's':
+                    system("clear");
+                    login_usuario();
+                    break;
+                default:
+                    system("clear");
+                    menu_principal();
+            }
         }
 
     }
