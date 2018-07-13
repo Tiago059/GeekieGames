@@ -1,0 +1,63 @@
+# depslib dependency file v1.0
+1531428401 source:/home/italo-tiago/Documentos/Codigos_de_LP_2018.1/Projetos/GeekieGamesRemastered/ajuda.cpp
+	"ajuda.h"
+	<iostream>
+	<fstream>
+	<stdlib.h>
+
+1531428035 /home/italo-tiago/Documentos/Codigos_de_LP_2018.1/Projetos/GeekieGamesRemastered/ajuda.h
+
+1531492014 source:/home/italo-tiago/Documentos/Codigos_de_LP_2018.1/Projetos/GeekieGamesRemastered/exercicios.cpp
+	"estruturas.h"
+	"suporte.h"
+	"exercicios.h"
+	"ajuda.h"
+	"menuInicial.h"
+	<iostream>
+	<fstream>
+	<string>
+	<string.h>
+	<stdlib.h>
+	<stdio.h>
+
+1531493753 /home/italo-tiago/Documentos/Codigos_de_LP_2018.1/Projetos/GeekieGamesRemastered/estruturas.h
+	<string>
+
+1531432531 /home/italo-tiago/Documentos/Codigos_de_LP_2018.1/Projetos/GeekieGamesRemastered/suporte.h
+
+1531425089 /home/italo-tiago/Documentos/Codigos_de_LP_2018.1/Projetos/GeekieGamesRemastered/exercicios.h
+
+1531409806 /home/italo-tiago/Documentos/Codigos_de_LP_2018.1/Projetos/GeekieGamesRemastered/menuInicial.h
+
+1531428153 source:/home/italo-tiago/Documentos/Codigos_de_LP_2018.1/Projetos/GeekieGamesRemastered/main.cpp
+	"menuInicial.h"
+
+1531433103 source:/home/italo-tiago/Documentos/Codigos_de_LP_2018.1/Projetos/GeekieGamesRemastered/menuInicial.cpp
+	"menuInicial.h"
+	"suporte.h"
+	"usuarios.h"
+	"ajuda.h"
+	<iostream>
+	<stdlib.h>
+
+1531422415 /home/italo-tiago/Documentos/Codigos_de_LP_2018.1/Projetos/GeekieGamesRemastered/usuarios.h
+
+1531428674 source:/home/italo-tiago/Documentos/Codigos_de_LP_2018.1/Projetos/GeekieGamesRemastered/suporte.cpp
+	"suporte.h"
+	<string.h>
+	<string.h>
+	<time.h>
+	<stdlib.h>
+
+1531493620 source:/home/italo-tiago/Documentos/Codigos_de_LP_2018.1/Projetos/GeekieGamesRemastered/usuarios.cpp
+	"usuarios.h"
+	"estruturas.h"
+	"suporte.h"
+	"exercicios.h"
+	"menuInicial.h"
+	<iostream>
+	<fstream>
+	<string>
+	<string.h>
+	<stdlib.h>
+
