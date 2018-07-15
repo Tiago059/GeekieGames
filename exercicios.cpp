@@ -9,8 +9,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-short pass;
-
 using namespace std;
 
 /*
@@ -29,37 +27,56 @@ void cadastrar_exercicio(){
     system("clear");
     exercicio novoExercicio; // Criando um novo exercicio
 
-    cout << "Bem-vindo a tela de cadastro de exercicios, adminstrador.\n";
     // selecionando uma categoria dentre uma lista
-    cout << "1. Selecione a categoria do exercicio.";
     novoExercicio.categoria = selecionar_categoria();
 
     // mesma coisa, agora para a dificuldade
-    cout << "2. Selecione a dificuldade do exercicio.";
     novoExercicio.dificuldade = selecionar_dificuldade();
 
-    /* Ao pressionar o enter na função anterior houve um salto para o proximo comando depois do getline
-    a seguir, ou seja, esse problema ocorre pois o comando ‘\n’ (quebra de linha) está no buffer fazendo
-    com que o comando getline interprete que é o final do caracter, por esse motivo é realizado um salto para o próximo comando.
-    Sempre usar cin.ignore apos digitar um enter que depois desse enter apareça um getline. */
     cin.ignore();
 
-    // Lendo o titulo do exercicio
-    cout << "3. Digite o titulo do exercicio.\nDigite: ";
-    getline(cin, novoExercicio.titulo);
+    // Lendo o titulo do exercicio, e checando se o cara simplesmente não apertou enter sem digitar nada
+    while (true){
+        system("clear");
+        cout << "|-------------------------------------------------------------|\n";
+        cout << "|             Cadastrando Novo Exercicio: Titulo              |\n";
+        cout << "|-------------------------------------------------------------|\n";
+        cout << "Digite o titulo do exercicio: ";
+        getline(cin, novoExercicio.titulo);
+        if (novoExercicio.titulo.length() == 0){
+            system("clear");
+            cout << "O titulo do exercicio nao pode ficar vazio!\n";
+            esperar(1.5);
+            continue;
+        }
+        else break;
+    }
 
-    // Lendo a descricao do exercicio
-    system("clear");
-    cout << "4. Digite a descricao do exercicio.\n";
-    getline(cin, novoExercicio.descricao);
+    // Lendo a descricao do exercicio, do mesmo jeito que antes
+    while (true){
+        system("clear");
+        cout << "|-------------------------------------------------------------|\n";
+        cout << "|           Cadastrando Novo Exercicio: Descricao             |\n";
+        cout << "|-------------------------------------------------------------|\n";
+        cout << "Digite a descricao do exercicio: ";
+        getline(cin, novoExercicio.descricao);
+        if (novoExercicio.descricao.length() == 0){
+            system("clear");
+            cout << "A descricao do exercicio nao pode ficar vazia!\n";
+            esperar(1.5);
+            continue;
+        }
+        else break;
+    }
 
     // Finalmente, salvando as devidas informações no arquivo de texto
     fstream arquivo;
-    /* Criando o caminho de onde o arquivo será salvo, com base na categoria e dificuldade */
 
+
+    // Criando o caminho de onde o arquivo será salvo, com base na categoria e dificuldade
     /* Alocando um novo vetor para guardar a extensão do arquivo de texto. Os 26 se referem a soma das strings constantes
     vistas aí no código, mais o tamanho da categoria e da dificuldade, e depois mais 1 para nao estourar o vetor */
-    novoExercicio.caminho = new char[(26 + (strlen(novoExercicio.categoria)*2) + strlen(novoExercicio.dificuldade) + 1)];
+    novoExercicio.caminho = new char[26 + (strlen(novoExercicio.categoria)*2) + strlen(novoExercicio.dificuldade) + 1];
     //Formato padrão do caminho: database/categoria/categoria-dificuldade.txt
     strcat(novoExercicio.caminho, "database/exercicios/");
     strcat(novoExercicio.caminho, novoExercicio.categoria);
@@ -68,7 +85,7 @@ void cadastrar_exercicio(){
     strcat(novoExercicio.caminho, "-");
     strcat(novoExercicio.caminho, novoExercicio.dificuldade);
     strcat(novoExercicio.caminho, ".txt");
-    // AO final disso, novoExercicio caminho deverá ter algo como: "database/exercicios/Sintaxe/Sintaxe-Facil.txt"
+    // Ao final disso, novoExercicio.caminho deverá ter algo como: "database/exercicios/Sintaxe/Sintaxe-Facil.txt"
 
     // Finalmente, gravando o exercício no arquivo de texto. Note que sempre termina com um '\n', o nosso novo delimitador.
     arquivo.open(novoExercicio.caminho, ios::out|ios::app);
@@ -77,25 +94,38 @@ void cadastrar_exercicio(){
     arquivo << "\n";
     arquivo.close();
 
-    // Exibindo para o admin os dados do exercício, com um delay de leve para ele ler tudo calmamente
+    // Exibindo para o admin os dados do exercício, com um delay de leve no final para ele ler tudo calmamente
     system("clear");
-    cout << "Novo exercicio cadastrado com sucesso!" << endl;
+    cout << "|-------------------------------------------------------------|\n";
+    cout << "|           Novo exercicio cadastrado com sucesso!            |\n";
     esperar(1);
-    cout << "Exercicio alterado em: " << novoExercicio.caminho << endl;
+    cout << "|-------------------------------------------------------------|\n";
+    cout << "|         Exercicio alterado no seguinte arquivo:             |\n";
+    cout << " " << novoExercicio.caminho << endl;
     esperar(1);
-    cout << "Titulo: " << novoExercicio.titulo << endl;
+    cout << "|-------------------------------------------------------------|\n";
+    cout << "|                  Titulo do exercicio:                       |\n";
+    cout << " " << novoExercicio.titulo << endl;
     esperar(1);
-    cout << "Descricao: "<< novoExercicio.descricao << endl;
+    cout << "|-------------------------------------------------------------|\n";
+    cout << "|                 Descricao do exercicio:                     |\n";
+    cout << " " << novoExercicio.descricao << endl;
     esperar(1);
-    cout << "Categoria: " << novoExercicio.categoria << endl;
+    cout << "|-------------------------------------------------------------|\n";
+    cout << "|                 Categoria do exercicio:                     |\n";
+    cout << " " << novoExercicio.categoria << endl;
     esperar(1);
-    cout << "Dificuldade: " << novoExercicio.dificuldade << endl;
+    cout << "|-------------------------------------------------------------|\n";
+    cout << "|                  Dificuldade do exercicio:                  |\n";
+    cout << " " << novoExercicio.dificuldade << endl;
+    cout << "|-------------------------------------------------------------|\n";
+    esperar(1);
 
-    // Deletando nosso vetor caminho, pois poderemos usar ele na proxima execução da função do programa.
+    // Deletando nosso vetor caminho, pois poderemos usar ele na proxima execução da função do programa e para liberar memória
     delete novoExercicio.caminho;
 
     // Um swtichzinho só para facilitar o cadastro de vários exercícios
-    cout << "\n\nCadastrar novo exercicio?(S/N)?\nDigite: ";
+    cout << "\n\nCadastrar novo exercicio?(S/N)\nDigite: ";
     char opcao;
     cin >> opcao;
     switch (opcao){
@@ -125,25 +155,31 @@ void menu_exercicios(login usuarioAtual){
     ifstream arquivo;
     string linha, linhaTitulo, linhaDescricao, linhaPivo;
 
-    cout << "Bem-vindo a tela de visualizacao de exercicios, " << usuarioAtual.nome << "!";
-    cout << "\nSelecione uma das opcoes a seguir: ";
-    cout << "\n1 - Visualizar exercicios aleatoriamente por categoria/dificuldade";
-    cout << "\n2 - Exibir Ajuda";
-    cout << "\n3 - Logoff & Retornar ao Menu Principal";
-    cout << "\nDigite: ";
+    cout << "|--------------------------------------------------------------------|\n";
+    cout << "|                    Visualizacao de exercicios                      |\n";
+    cout << "|--------------------------------------------------------------------|\n";
+    cout << " Bem-vindo(a), " << usuarioAtual.nome << "!\n";
+    cout << "|--------------------------------------------------------------------|\n";
+    cout << "|                       Opcoes Disponiveis                           |\n";
+    cout << "|                                                                    |\n";
+    cout << "| 1 - Visualizar exercicios aleatoriamente por categoria/dificuldade |\n";
+    cout << "| 2 - Exibir a ajuda                                                 |\n";
+    cout << "| 3 - Logoff & Retornar ao Menu Principal                            |\n";
+    cout << "|--------------------------------------------------------------------|\n";
+    cout << "Selecione uma das opcoes:";
     cin >> opcao;
 
     switch (opcao){ // trocar por um if
         case 1:
             system("clear");
             // Escolhendo a categoria e a dificuldade para saber qual arquivo de exercicios deverá ser lido
-            cout << "Escolha uma categoria de exercicios: ";
+            cout << "Escolha uma categoria de exercicios: \n";
             categoriaEscolhida = selecionar_categoria();
-            cout << "Escolha uma dificuldade dos exercicios: ";
+            cout << "Escolha uma dificuldade dos exercicios: \n";
             dificuldadeEscolhida = selecionar_dificuldade();
 
             // Definindo qual arquivo de exercicios sera lido
-            caminhoExercicio = new char[(26 + (strlen(categoriaEscolhida)*2) + strlen(dificuldadeEscolhida) + 1)];
+            caminhoExercicio = new char[26 + (strlen(categoriaEscolhida)*2) + strlen(dificuldadeEscolhida) + 1];
             //Formato padrão do caminho: database/categoria/categoria-dificuldade.txt
             strcat(caminhoExercicio, "database/exercicios/");
             strcat(caminhoExercicio, categoriaEscolhida);
@@ -157,7 +193,7 @@ void menu_exercicios(login usuarioAtual){
             // contando quantos exercicios ha no arquivo de texto escolhido
 
             do {
-                if (!arquivo.is_open()){ // Checando primeiramente se o arquivo existe, ou seja: se ele existe entao ele está aberto
+                if (!arquivo.is_open()){ // Checando primeiramente se o arquivo existe, ou seja: se ele existe entao ele estará aberto
                     system("clear");
                     cout << "Desculpe, nao ha nenhum exercicio cadastrado com essa categoria e/ou dificuldade.\n";
                     esperar(2);
@@ -172,7 +208,6 @@ void menu_exercicios(login usuarioAtual){
                     if (linha.length() == 0) quantExercicios++; // Significa que ele encontrou o delimitador
                 }
             } while(!arquivo.eof());
-
 
             // Gravando os exercicios no vetor de exercicios
             quantExercicios--; // como o delimitador é o \n, no final da execução o quantExercicios ficara com 1 a mais
@@ -226,7 +261,6 @@ void exibir_exercicios(int numero, int anterior, int quantExercicios, exercicio 
     system("clear");
     int *exerciciosVisualizados, quantVisu = 0, pivo, opcao, i, j;
     string linhaTeste;
-
     fstream arquivo;
     char *caminho;
     bool deletar;
@@ -250,8 +284,6 @@ void exibir_exercicios(int numero, int anterior, int quantExercicios, exercicio 
 
     arquivo.open(caminho, ios::out|ios::app); // Criando/acessando o arquivo
     arquivo.close();
-
-    //cout << "caminho:" << caminho << endl;
 
     // Fazendo os exercicios escolhidos pelo usuário não repetirem mais
     arquivo.open(caminho, ios::in);
@@ -277,29 +309,16 @@ void exibir_exercicios(int numero, int anterior, int quantExercicios, exercicio 
             cout << " Enunciado: --\n\n";
         }
         else {
-            //cout << "quantVisu: " << quantVisu << endl;
             // Criando o vetor com exercícios visualizados e preenchendo eles
             arquivo.open(caminho, ios::in);
             for (i = 0;i < (quantVisu - 1);i++) arquivo >> exerciciosVisualizados[i]; // Gravando no vetor os exercícios visualizados
-
-            //for (i = 0;i < (quantVisu - 1);i++) cout << exerciciosVisualizados[i] << " ";
-            //cout << "exerciciosVisualizados[1]: " << exerciciosVisualizados[1] << endl;
-            //cout << "exerciciosVisualizados[1] + 10: " <<  exerciciosVisualizados[1] + 10 << endl;
-            //system("read -p '\nAperte qualquer tecla para retornar:' var");
             // Checando se o número gerado aleatoriamente está dentro do vetor de exercícios visualizados
-            i = 0;
-            j = 0;
+            i = j = 0;
             while (i < (quantVisu - 1)){
                 j++;
-                //cout << "numero " << numero << endl;
-                //cout << "i: " << i << endl;
-                //cout << "exerciciosVisualizados[i]: " <<  exerciciosVisualizados[i] << endl;
-                //const char *boole = BoolToString(numero == exerciciosVisualizados[i]);
-                //cout << "numero " << numero << " == " << "exerciciosVisualizados[" << i << "]? " << exerciciosVisualizados[i] << "eh: " << boole << endl;
                 if (numero == exerciciosVisualizados[i]){
                     numero = aleatorio(0, quantExercicios-1); // Gerando uma nova tentativa de exercício
-                    //cout << "numero" << numero << endl;
-                    j = 0; // Para reinciar o loop, fazendo que o programa só saia desse loop quando encontrar um número que não esteja no vetor
+                    j = 0; // Para fazer reinciar o loop, fazendo que o programa só saia desse loop quando encontrar um número que não esteja no vetor
                 }
                 i = j;
             }
@@ -318,8 +337,6 @@ void exibir_exercicios(int numero, int anterior, int quantExercicios, exercicio 
         cout << " Titulo: " << exercicios[numero].titulo << endl;
         cout << " Enunciado: " << exercicios[numero].descricao << "\n\n";
     }
-
-    //cout << "numero" << numero << endl;
 
     cout << "|----------------------------------------------------------------------------|\n";
     cout << "|                                 Menu                                       |\n";
@@ -341,6 +358,7 @@ void exibir_exercicios(int numero, int anterior, int quantExercicios, exercicio 
         if (anterior == -1) {
             system("clear");
             cout << "Opcao invalida (pois estamos no inicio do programa...). \n";
+            system("clear");
             esperar(1.5);
         }
         else {
@@ -355,10 +373,6 @@ void exibir_exercicios(int numero, int anterior, int quantExercicios, exercicio 
         arquivoVisu.open(caminho, ios::out|ios::app); // Abrindo o arquivo de visualizações
         arquivoVisu << numero << " "; // Gravando o número do exercício que o usuário não quer mais ver
         arquivoVisu.close();
-        /*cout << "\nExercicio numero " << numero+1 << " marcado como visualizado com sucesso!\n";
-        esperar(2);
-        system("clear");*/
-        arquivoVisu.close();
     }
     else if (opcao == 4){
         deletar = true;
@@ -366,13 +380,16 @@ void exibir_exercicios(int numero, int anterior, int quantExercicios, exercicio 
         fstream arquivoVisu;
         arquivoVisu.open(caminho, ios::out); // Note que isto funciona porque não abro o arquivo no modo ios::app
         arquivoVisu.close();
-        /*cout << "\nAs visuzalicoes do arquivo " << caminho << " foram zeradas com sucesso!\n";
-        esperar(2);
-        system("clear");*/
         numero = aleatorio(0, quantExercicios-1); // Gerando um novo número aleatório, só para continuar o programa
     }
-    else if (opcao == 5) menu_exercicios(usuario);
-    else if (opcao == 6) menu_principal();
+    else if (opcao == 5) {
+        delete caminho;
+        menu_exercicios(usuario);
+    }
+    else if (opcao == 6){
+        delete caminho;
+        menu_principal();
+    }
     else {
         deletar = true;
         system("clear");
@@ -381,44 +398,51 @@ void exibir_exercicios(int numero, int anterior, int quantExercicios, exercicio 
         numero = aleatorio(0, quantExercicios-1); // Gerando um novo número aleatório, só para continuar o programa
     }
 
+    // Se ele entra no if, então preciso garantir que o vetor de caminho será deletado e chamar novamente a função
     if (deletar){
-        // Para garantir que o vetor de caminho será deletado corretamente, as ações terminam fechando o caminho
         delete caminho;
-        exibir_exercicios(numero, anterior, quantExercicios, exercicios, usuario); // e chamamos o próximo exercicio
+        exibir_exercicios(numero, anterior, quantExercicios, exercicios, usuario);
     }
 }
 /* ---------------------------------------------------------------- */
 const char *selecionar_categoria(){
+    system("clear");
     const char *categoria;
     int opcao;
 
-    while (true) {
-        cout << "\n\nSelecione a categoria: ";
-        cout << "\n1 - Sintaxe\n2 - Condicionais\n3 - Lacos de Repeticao\n4 - Vetores & Matrizes";
-        cout << "\n5 - Funcoes\n6 - Ponteiros\n7 - Strings\n8 - Estruturas\n9 - Arquivos";
-        cout << "\nDigite: ";
-        cin >> opcao;
+    cout << "|-------------------------------------------------------------|\n";
+    cout << "|                   Categorias Disponiveis                    |\n";
+    cout << "|-------------------------------------------------------------|\n";
+    cout << "| 1 - Sintaxe                                                 |\n";
+    cout << "| 2 - Condicionais                                            |\n";
+    cout << "| 3 - Lacos de Repeticao                                      |\n";
+    cout << "| 4 - Vetores & Matrizes                                      |\n";
+    cout << "| 5 - Funcoes                                                 |\n";
+    cout << "| 6 - Ponteiros                                               |\n";
+    cout << "| 7 - Strings                                                 |\n";
+    cout << "| 8 - Estruturas                                              |\n";
+    cout << "| 9 - Arquivos                                                |\n";
+    cout << "|-------------------------------------------------------------|\n";
+    cout << "\n\nSelecione a categoria: ";
+    cin >> opcao;
 
-        if ( (opcao < 0) || (opcao > 9) ){
+    switch (opcao){
+        case 1: categoria = "Sintaxe"; break;
+        case 2: categoria = "Condicionais"; break;
+        case 3: categoria = "Lacos de Repeticao"; break;
+        case 4: categoria = "Vetores & Matrizes"; break;
+        case 5: categoria = "Funcoes"; break;
+        case 6: categoria = "Ponteiros"; break;
+        case 7: categoria = "Strings"; break;
+        case 8: categoria = "Estruturas"; break;
+        case 9: categoria = "Arquivos"; break;
+        default:
             system("clear");
-            cout << "Categoria invalida. Tente novamente.";
+            cout << "Categoria invalida. Tente novamente.\n";
+            esperar(1.5);
             system("clear");
-            continue;
-        }
-        else { // substituir por switch
-            if (opcao == 1) categoria = "Sintaxe";
-            else if (opcao == 2) categoria = "Condicionais";
-            else if (opcao == 3) categoria = "Lacos de Repeticao";
-            else if (opcao == 4) categoria = "Vetores & Matrizes";
-            else if (opcao == 5) categoria = "Funcoes";
-            else if (opcao == 6) categoria = "Ponteiros";
-            else if (opcao == 7) categoria = "Strings";
-            else if (opcao == 8) categoria = "Estruturas";
-            else if (opcao == 9) categoria = "Arquivos";
-
-            system("clear");
+            selecionar_categoria();
             break;
-        }
     }
 
     return categoria;
@@ -426,28 +450,31 @@ const char *selecionar_categoria(){
 
 /* ---------------------------------------------------------------- */
 const char *selecionar_dificuldade(){
+    system("clear");
     const char *dificuldade;
     unsigned opcao;
 
-    while (true) {
-        cout << "\n\nSelecione a dificuldade: ";
-        cout << "\n1 - Facil\n2 - Medio\n3 - Dificil";
-        cout << "\nDigite: ";
-        cin >> opcao;
+    cout << "|-------------------------------------------------------------|\n";
+    cout << "|                   Dificuldades Disponiveis                  |\n";
+    cout << "|-------------------------------------------------------------|\n";
+    cout << "| 1 - Facil                                                   |\n";
+    cout << "| 2 - Medio                                                   |\n";
+    cout << "| 3 - Dificil                                                 |\n";
+    cout << "|-------------------------------------------------------------|\n";
+    cout << "\nSelecione a dificuldade: ";
+    cin >> opcao;
 
-        if ( (opcao < 0) || (opcao > 3) ){
+    switch (opcao){
+        case 1: dificuldade = "Facil"; break;
+        case 2: dificuldade = "Medio"; break;
+        case 3: dificuldade = "Dificil"; break;
+        default:
             system("clear");
-            cout << "Dificuldade invalida. Tente novamente.";
-            continue;
-        }
-        else { // também trocar por switch
-            if (opcao == 1) dificuldade = "Facil";
-            else if (opcao == 2) dificuldade = "Medio";
-            else if (opcao == 3) dificuldade = "Dificil";
-
+            cout << "Dificuldade invalida. Tente novamente.\n";
+            esperar(1.5);
             system("clear");
+            selecionar_dificuldade();
             break;
-        }
     }
 
     return dificuldade;

@@ -1,0 +1,2 @@
+Para cadastrar exercícios, voce precisa do nome e senha do administrador. O nome e a senha do administrador são "admin" e "admin" respectivamente. Sim, isso mesmo.
+

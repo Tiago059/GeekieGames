@@ -27,7 +27,9 @@ que já está poluído) este arquivo.
 
 void cadastrar_usuario(){
     system("clear");
-    cout << "Bem-vindo a tela de cadastro de novos usuarios!(Tecle enter se nada aparecer)\n" << endl;
+    cout << "|-------------------------------------------------------------|\n";
+    cout << "|                Cadastro de um novo usuario                  |\n";
+    cout << "|-------------------------------------------------------------|\n";
     login usuario; // Struct que receberá o login (nome + senha)
     fstream arquivo;
     char opcao;
@@ -37,13 +39,12 @@ void cadastrar_usuario(){
     arquivo.close();
 
     // Adquirindo o nome de usuário
+    cin.ignore();
     while (true){
         cout << "Digite um nome de usuario que voce queira.\nPode usar qualquer simbolo exceto, o '*', '/' ou espacos: ";
-        cin.ignore();
-        getline(cin, usuario.nomeString); // Lendo como string para permitir espaços
 
+        getline(cin, usuario.nomeString); // Lendo como string para permitir espaços
         usuario.nome = usuario.nomeString.c_str(); // E reconvertendo para um char
-        //cin >> usuario.nome;
 
         // Verificando se o nome é válido, e irá continuar nesse loop até que o usuário digite corretamente.
         size_t buscaAster = usuario.nomeString.find("*");
@@ -55,8 +56,14 @@ void cadastrar_usuario(){
             cout << "Nome de usuario invalido. Digite novamente.\n";
             esperar(1.5);
             system("clear");
-         }
-         else break;
+        }
+        else if (usuario.nomeString.length() == 0) {
+            cout << "O nome de usuario nao pode ficar vazio!\n";
+            esperar(1.5);
+            system("clear");
+
+        }
+        else break;
     }
 
     cout << "\n";
@@ -66,10 +73,9 @@ void cadastrar_usuario(){
         cout << "Digite uma senha.\nEla tambem nao pode conter '*', '/' ou espacos em branco: ";
         /* A falta do cin.ignore() aqui é que ele iria ignorar um caractere extra, no caso
         iria ignorar o primeiro caractere digitado pelo usuário, então né... */
-        getline(cin, usuario.senhaString); // Lendo como string para permitir espaços
 
+        getline(cin, usuario.senhaString); // Lendo como string para permitir espaços
         usuario.senha = usuario.senhaString.c_str(); // E reconvertendo para um char
-        //cin >> usuario.senha;
 
         // Verificando se a senha é válida, do mesmo jeitinho
         size_t buscaAster = usuario.senhaString.find("*");
@@ -77,6 +83,11 @@ void cadastrar_usuario(){
         size_t buscaEspaco = usuario.senhaString.find(" ");
         if( (buscaAster != string::npos) || (buscaBarra != string::npos) || (buscaEspaco != string::npos) ){
             cout << "Senha invalida. Digite novamente.\n";
+            esperar(1.5);
+            system("clear");
+         }
+         else if (usuario.senhaString.length() == 0) {
+            cout << "A senha nao pode ficar vazia!\n";
             esperar(1.5);
             system("clear");
          }
@@ -132,11 +143,17 @@ void cadastrar_usuario(){
     arquivo << usuario.senha << "/";        // O / é o delimitador que separa cada LOGIN (nome + senha) do outro
     arquivo.close();
 
-    // Confirmando pro usuário as informações digitadas
-    cout << "\nLogin: " << usuario.nome << endl;
-    cout << "Senha: " << usuario.senha << endl;
-    cout << "Cadastrado com sucesso!\n";
-    esperar(2); // Delay de leve para dar tempo do usuário ver
+    // Confirmando pro usuário as informações digitadas com delays de leve para dar tempo do usuário ver
+    cout << "|-------------------------------------------------------------|\n";
+    cout << "|             Novo login cadastrado com sucesso!              |\n";
+    cout << "|-------------------------------------------------------------|\n";
+    esperar(1);
+    cout << " Nome de usuario: " << usuario.nome << endl;
+    esperar(1);
+    cout << " Senha: " << usuario.senha << endl;
+    cout << "|-------------------------------------------------------------|\n";
+    esperar(2);
+
     system("clear");
 
     // Chamando o menu principal novamente, saindo da tela de cadastro
@@ -156,7 +173,9 @@ void login_usuario(){
     // Ficará no loop até digitar corretamente ou voltar ao menu inicial
     while (achou == false){
 
-        cout << "Bem-vindo a tela de login!\nDigite suas informacoes para acessar o Proximo Exercicio!\n";
+        cout << "|----------------------------------------------------------------|\n";
+        cout << "|Faca login: Digite seus dados para acessar o Proximo Exercicio! |\n";
+        cout << "|----------------------------------------------------------------|\n";
 
         cout << "Digite o seu nome de usuario: ";
         cin.ignore();
@@ -204,11 +223,9 @@ void login_usuario(){
         else {
             system("clear");
             cout << "Usuario e/ou senha invalidos. \n";
-
-            // Um swtichzinho só para facilitar o erro do nosso querido usuário
             cout << "Tentar novamente?(S para sim, qualquer outra tecla para voltar ao menu principal)\nDigite: ";
             cin >> opcao;
-            switch (opcao){
+            switch (opcao){  // Um swtichzinho só para facilitar o erro do nosso querido usuário
                 case 'S':
                 case 's':
                     system("clear");

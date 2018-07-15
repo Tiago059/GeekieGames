@@ -15,12 +15,15 @@ se encontra no arquivo 'help.h', apenas para manter o padrão.
 
 void exibirAjuda(){
     system("clear");
-    ifstream arquivo;
+    fstream arquivo;
     string linha;
 
     // Exibindo o arquivo de ajuda para o usuário. Nada demais.
-    arquivo.open("database/help.txt");
+    arquivo.open("database/help.txt", ios::in);
     // Lendo o arquivo de texto ate o fim dele
+    cout << "|------------------------------------------------------|\n";
+    cout << "|                   Ajuda do Programa                  |\n";
+    cout << "|------------------------------------------------------|\n";
     while (!arquivo.eof()){
         getline(arquivo, linha);
         cout << linha << endl;

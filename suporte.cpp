@@ -57,10 +57,7 @@ char *split(char *stringue, char delimitador, unsigned *posicao){
         return palavra;
     }
 
-    else {
-        return palavra;
-    }
-
+    else return palavra;
 }
 
 int aleatorio(int min, int max){

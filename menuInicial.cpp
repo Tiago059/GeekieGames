@@ -24,11 +24,18 @@ que já está poluído) este arquivo.
 void menu_principal(){
 
     system("clear");
-    cout << "Bem-vindo ao Recomenda Exercicios!";
-    cout << "\nPor favor, digite uma opção:";
-    cout << "\n1 - Novo Usuario? Cadastre-se agora.\n2 - Ja tem cadastro? Efetue login.\n";
-    cout << "3 - Cadastrar Exercício (Adminstrador)\n4 - Ajuda\n0 - Sair da Aplicacao\n";
-    cout << "\nDigite: ";
+    cout << "|-------------------------------------------------------------|\n";
+    cout << "|          Bem-vindo ao Proximo Exercicio Versao 1.0!         |\n";
+    cout << "|-------------------------------------------------------------|\n";
+    cout << "|                    Opcoes Disponiveis                       |\n";
+    cout << "|                                                             |\n";
+    cout << "| 1 - Novo Usuario? Cadastre-se agora.                        |\n";
+    cout << "| 2 - Ja tem cadastro? Efetue login.                          |\n";
+    cout << "| 3 - Cadastrar exercicios (Adminstrador)                     |\n";
+    cout << "| 4 - Exibir a Ajuda                                          |\n";
+    cout << "| 0 - Sair da Aplicacao                                       |\n";
+    cout << "|-------------------------------------------------------------|\n";
+    cout << "Digite: ";
 
     selecionar_opcao();
 
@@ -68,7 +75,9 @@ void menu_administrador(){
     system("clear");
     login admin;
     char opcao;
-    cout << "Bem-vindo a tela do administrador!";
+    cout << "|-------------------------------------------------------------|\n";
+    cout << "|                    Menu do Administrador                    |\n";
+    cout << "|-------------------------------------------------------------|\n";
     while (true){
         cout << "\nDigite seu login de administrador. ";
         cout << "\nUsuario: ";
@@ -77,8 +86,8 @@ void menu_administrador(){
         admin.nome = admin.nomeString.c_str();
 
         cout << "Senha: ";
-        getline(cin, admin.nomeString);
-        admin.nome = admin.senhaString.c_str();
+        getline(cin, admin.senhaString);
+        admin.senha = admin.senhaString.c_str();
 
         //cin >> admin.senha;
 
@@ -86,7 +95,7 @@ void menu_administrador(){
         else {
             cout << "\nUsuario e/ou senha invalidos.\n";
             // Um swtichzinho só para facilitar o erro do nosso querido usuário
-            cout << "Tentar novamente?(S para sim, qualquer outra tecla para voltar ao menu principal)?\nDigite: ";
+            cout << "Tentar novamente?(S para sim, qualquer outra tecla para voltar ao menu principal)\nDigite: ";
             cin >> opcao;
             switch (opcao){
                 case 'S':
@@ -103,4 +112,3 @@ void menu_administrador(){
     }
 
 }
-
