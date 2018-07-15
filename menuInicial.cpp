@@ -72,9 +72,15 @@ void menu_administrador(){
     while (true){
         cout << "\nDigite seu login de administrador. ";
         cout << "\nUsuario: ";
-        cin >> admin.nome;
+        cin.ignore();
+        getline(cin, admin.nomeString);
+        admin.nome = admin.nomeString.c_str();
+
         cout << "Senha: ";
-        cin >> admin.senha;
+        getline(cin, admin.nomeString);
+        admin.nome = admin.senhaString.c_str();
+
+        //cin >> admin.senha;
 
         if ( (strcmp(admin.nome, "admin") == 0) && (strcmp(admin.senha, "admin") == 0) ) cadastrar_exercicio();
         else {

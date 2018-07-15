@@ -38,11 +38,20 @@ void cadastrar_usuario(){
 
     // Adquirindo o nome de usuário
     while (true){
-        cout << "Digite um nome de usuario que voce queira.\nPode usar qualquer simbolo exceto o '*' ou '/': ";
-        cin >> usuario.nome;
+        cout << "Digite um nome de usuario que voce queira.\nPode usar qualquer simbolo exceto, o '*', '/' ou espacos: ";
+        cin.ignore();
+        getline(cin, usuario.nomeString); // Lendo como string para permitir espaços
+
+        usuario.nome = usuario.nomeString.c_str(); // E reconvertendo para um char
+        //cin >> usuario.nome;
 
         // Verificando se o nome é válido, e irá continuar nesse loop até que o usuário digite corretamente.
-        if( ( buscaCaractere(usuario.nome, '*') + buscaCaractere(usuario.nome, '/')  ) != 0){
+        size_t buscaAster = usuario.nomeString.find("*");
+        size_t buscaBarra = usuario.nomeString.find("/");
+        size_t buscaEspaco = usuario.nomeString.find(" ");
+        // Retorna a posição do primeiro caractere encontrado
+        // Se não encontrado, ele retorna uma variavel "string::npos" (no position)
+        if( (buscaAster != string::npos) || (buscaBarra != string::npos) || (buscaEspaco != string::npos) ){
             cout << "Nome de usuario invalido. Digite novamente.\n";
             esperar(1.5);
             system("clear");
@@ -54,12 +63,19 @@ void cadastrar_usuario(){
 
     // Adquirindo a senha do usuário
     while (true){
-        cout << "Digite uma senha.\nEla tambem nao pode conter '*' ou '/': ";
-        cin >> usuario.senha;
+        cout << "Digite uma senha.\nEla tambem nao pode conter '*', '/' ou espacos em branco: ";
+        /* A falta do cin.ignore() aqui é que ele iria ignorar um caractere extra, no caso
+        iria ignorar o primeiro caractere digitado pelo usuário, então né... */
+        getline(cin, usuario.senhaString); // Lendo como string para permitir espaços
+
+        usuario.senha = usuario.senhaString.c_str(); // E reconvertendo para um char
         //cin >> usuario.senha;
 
         // Verificando se a senha é válida, do mesmo jeitinho
-        if( ( buscaCaractere(usuario.senha, '*') + buscaCaractere(usuario.senha, '/') ) != 0){
+        size_t buscaAster = usuario.senhaString.find("*");
+        size_t buscaBarra = usuario.senhaString.find("/");
+        size_t buscaEspaco = usuario.senhaString.find(" ");
+        if( (buscaAster != string::npos) || (buscaBarra != string::npos) || (buscaEspaco != string::npos) ){
             cout << "Senha invalida. Digite novamente.\n";
             esperar(1.5);
             system("clear");
@@ -88,7 +104,7 @@ void cadastrar_usuario(){
         // Comparando se nome digitado está no arquivo
         if ( (strcmp(usuario.nome, stringNome) == 0) || (strcmp(usuario.nome, "admin") == 0) ){
             system("clear");
-            cout << "O nome de usuario " << usuario.nome << " ja esta cadastrado ou não pode ser usado.\n";
+            cout << "O nome de usuario *" << usuario.nome << "* ja esta cadastrado ou não pode ser usado.\n";
             // Um swtichzinho só para facilitar o erro do nosso querido usuário
             cout << "Tentar novamente?(S para sim, qualquer outra tecla para voltar ao menu principal)\nDigite: ";
             cin >> opcao;
@@ -141,10 +157,15 @@ void login_usuario(){
     while (achou == false){
 
         cout << "Bem-vindo a tela de login!\nDigite suas informacoes para acessar o Proximo Exercicio!\n";
+
         cout << "Digite o seu nome de usuario: ";
-        cin >> usuario.nome;
+        cin.ignore();
+        getline(cin, usuario.nomeString);
+        usuario.nome = usuario.nomeString.c_str();
+
         cout << "Digite a sua senha: ";
-        cin >> usuario.senha;
+        getline(cin, usuario.senhaString);
+        usuario.senha = usuario.senhaString.c_str();
 
         // Retirando do arquivo de texto os logins e salvando em buffer
         arquivo.open("database/logins.txt", ios::in);
@@ -159,28 +180,22 @@ void login_usuario(){
         do novo valor de posBuscaX */
 
         // Separando os logins e fazendo a checagem
-        // Fazendo a checagem inicial se o usuario é o queridissimo administrador
-        if ( (strcmp(usuario.nome, "admin") == 0) && (strcmp(usuario.senha, "admin") == 0) ) {
-            cadastrar_exercicio(); // Chama o menu de cadastrar exercício para o administrador
-        }
-        else {
-            while (posBusca1 < strlen(buffer)){ // Enquanto não chegar ao final da linha
-                // Extraindo um login (nome e senha juntos)
-                stringLinha = split(buffer, '/', &posBusca1);
+        while (posBusca1 < strlen(buffer)){ // Enquanto não chegar ao final da linha
+            // Extraindo um login (nome e senha juntos)
+            stringLinha = split(buffer, '/', &posBusca1);
 
-                // Extraindo o nome do login
-                stringNome = split(stringLinha, '*', &posBusca2);
+            // Extraindo o nome do login
+            stringNome = split(stringLinha, '*', &posBusca2);
 
-                // Extraindo a senha do login
-                stringSenha = split(stringLinha, '*', &posBusca2);
+            // Extraindo a senha do login
+            stringSenha = split(stringLinha, '*', &posBusca2);
 
-                // Comparando se a senha e o nome batem com os dados digitados pelo usuário
-                if ( (strcmp(usuario.nome, stringNome) == 0) && (strcmp(usuario.senha, stringSenha) == 0) ) {
-                    achou = true;
-                    break;
-                }
-                posBusca2 = 0; // Faz com que a procura sempre seja desde o inicio da substring a cada interação.
+            // Comparando se a senha e o nome batem com os dados digitados pelo usuário
+            if ( (strcmp(usuario.nome, stringNome) == 0) && (strcmp(usuario.senha, stringSenha) == 0) ) {
+                achou = true;
+                break;
             }
+            posBusca2 = 0; // Faz com que a procura sempre seja desde o inicio da substring a cada interação.
         }
 
 

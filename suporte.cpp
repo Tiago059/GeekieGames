@@ -27,22 +27,6 @@ const char *BoolToString(bool b) {
    else return "false";
 }
 
-int buscaCaractere(char *stringue, char busca){
-    bool achou = false;
-    unsigned i;
-
-    for (i = 0;i < strlen(stringue);i++){
-        if (stringue[i] == busca) {
-            achou = true;
-            break;
-        }
-    }
-
-    if (achou) return 1;
-    else return 0;
-
-}
-
 char *split(char *stringue, char delimitador, unsigned *posicao){
     char *palavra;
     unsigned i, j, k;

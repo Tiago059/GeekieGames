@@ -196,8 +196,6 @@ void menu_exercicios(login usuarioAtual){
                 listaExercicios[i].categoria = categoriaEscolhida;
                 listaExercicios[i].dificuldade = dificuldadeEscolhida;
 
-                listaExercicios[i].resolvido = false; // valor padrão, pois o usuario ainda nao marcou como resolvida
-
                 getline(arquivo, linhaPivo); /* serve apenas para pular uma linha para a proxima linha do arquivo,
                 já que nessa linha encontra-se o delimitador, fazendo ir ao proximo bloco de exercicios (ou ao fim do arquivo) */
             }
@@ -268,46 +266,60 @@ void exibir_exercicios(int numero, int anterior, int quantExercicios, exercicio 
             quantVisu++;
         }
         arquivo.close();
-        //cout << "quantVisu: " << quantVisu << endl;
-        // Criando o vetor com exercícios visualizados e preenchendo eles
-        arquivo.open(caminho, ios::in);
         exerciciosVisualizados = new int[quantVisu - 1]; // Subtrai-se 1 porque o cursor vai até o eof, tendo um elemento a mais
-        for (i = 0;i < (quantVisu - 1);i++) arquivo >> exerciciosVisualizados[i]; // Gravando no vetor os exercícios visualizados
-
-        //for (i = 0;i < (quantVisu - 1);i++) cout << exerciciosVisualizados[i] << " ";
-        //cout << "exerciciosVisualizados[1]: " << exerciciosVisualizados[1] << endl;
-        //cout << "exerciciosVisualizados[1] + 10: " <<  exerciciosVisualizados[1] + 10 << endl;
-        //system("read -p '\nAperte qualquer tecla para retornar:' var");
-        // Checando se o número gerado aleatoriamente está dentro do vetor de exercícios visualizados
-        i = 0;
-        j = 0;
-        while (i < (quantVisu - 1)){
-            j++;
-            //cout << "numero " << numero << endl;
-            //cout << "i: " << i << endl;
-            //cout << "exerciciosVisualizados[i]: " <<  exerciciosVisualizados[i] << endl;
-            //const char *boole = BoolToString(numero == exerciciosVisualizados[i]);
-            //cout << "numero " << numero << " == " << "exerciciosVisualizados[" << i << "]? " << exerciciosVisualizados[i] << "eh: " << boole << endl;
-            if (numero == exerciciosVisualizados[i]){
-                numero = aleatorio(0, quantExercicios-1); // Gerando uma nova tentativa de exercício
-                //cout << "numero" << numero << endl;
-                j = 0; // Para reinciar o loop, fazendo que o programa só saia desse loop quando encontrar um número que não esteja no vetor
-            }
-            i = j;
+        // Checando se o usuário marcou todas as questões como resolvidas
+        if ( (quantVisu - 1) >= quantExercicios){
+            cout << "|----------------------------------------------------------------------------|\n";
+            cout << "|   Todos os exercicios desta categoria e dificuldade foram marcados         |\n";
+            cout << "|   como visualizados pelo usuario. Selecionar a opcao 4 desfaz isso.        |\n";
+            cout << "|----------------------------------------------------------------------------|\n\n";
+            cout << " Titulo: --" << endl;
+            cout << " Enunciado: --\n\n";
         }
-        delete exerciciosVisualizados; // Aquela liberada de memória básica
+        else {
+            //cout << "quantVisu: " << quantVisu << endl;
+            // Criando o vetor com exercícios visualizados e preenchendo eles
+            arquivo.open(caminho, ios::in);
+            for (i = 0;i < (quantVisu - 1);i++) arquivo >> exerciciosVisualizados[i]; // Gravando no vetor os exercícios visualizados
+
+            //for (i = 0;i < (quantVisu - 1);i++) cout << exerciciosVisualizados[i] << " ";
+            //cout << "exerciciosVisualizados[1]: " << exerciciosVisualizados[1] << endl;
+            //cout << "exerciciosVisualizados[1] + 10: " <<  exerciciosVisualizados[1] + 10 << endl;
+            //system("read -p '\nAperte qualquer tecla para retornar:' var");
+            // Checando se o número gerado aleatoriamente está dentro do vetor de exercícios visualizados
+            i = 0;
+            j = 0;
+            while (i < (quantVisu - 1)){
+                j++;
+                //cout << "numero " << numero << endl;
+                //cout << "i: " << i << endl;
+                //cout << "exerciciosVisualizados[i]: " <<  exerciciosVisualizados[i] << endl;
+                //const char *boole = BoolToString(numero == exerciciosVisualizados[i]);
+                //cout << "numero " << numero << " == " << "exerciciosVisualizados[" << i << "]? " << exerciciosVisualizados[i] << "eh: " << boole << endl;
+                if (numero == exerciciosVisualizados[i]){
+                    numero = aleatorio(0, quantExercicios-1); // Gerando uma nova tentativa de exercício
+                    //cout << "numero" << numero << endl;
+                    j = 0; // Para reinciar o loop, fazendo que o programa só saia desse loop quando encontrar um número que não esteja no vetor
+                }
+                i = j;
+            }
+            delete exerciciosVisualizados; // Aquela liberada de memória básica
+            cout << "|----------------------------------------------------------------------------|\n";
+            cout << "\t\t\t\tExercicio Nº " << numero + 1 << endl;
+            cout << "|----------------------------------------------------------------------------|\n\n";
+            cout << " Titulo: " << exercicios[numero].titulo << endl;
+            cout << " Enunciado: " << exercicios[numero].descricao << "\n\n";
+        }
     }
-    /*else {
-        cout << "ARQUIVO VAZIO" << endl;
+    else {
+        cout << "|----------------------------------------------------------------------------|\n";
+        cout << "\t\t\t\tExercicio Nº " << numero + 1 << endl;
+        cout << "|----------------------------------------------------------------------------|\n\n";
+        cout << " Titulo: " << exercicios[numero].titulo << endl;
+        cout << " Enunciado: " << exercicios[numero].descricao << "\n\n";
     }
 
-    cout << "numero" << numero << endl;*/
-
-    cout << "|----------------------------------------------------------------------------|\n";
-    cout << "\t\t\t\tExercicio Nº " << numero + 1 << endl;
-    cout << "|----------------------------------------------------------------------------|\n\n";
-    cout << " Titulo: " << exercicios[numero].titulo << endl;
-    cout << " Enunciado: " << exercicios[numero].descricao << "\n\n";
+    //cout << "numero" << numero << endl;
 
     cout << "|----------------------------------------------------------------------------|\n";
     cout << "|                                 Menu                                       |\n";
@@ -325,6 +337,7 @@ void exibir_exercicios(int numero, int anterior, int quantExercicios, exercicio 
         numero = aleatorio(0, quantExercicios-1); // E gerando um novo exercicio aleatorio
     }
     else if (opcao == 2){
+        deletar = true;
         if (anterior == -1) {
             system("clear");
             cout << "Opcao invalida (pois estamos no inicio do programa...). \n";
@@ -342,9 +355,9 @@ void exibir_exercicios(int numero, int anterior, int quantExercicios, exercicio 
         arquivoVisu.open(caminho, ios::out|ios::app); // Abrindo o arquivo de visualizações
         arquivoVisu << numero << " "; // Gravando o número do exercício que o usuário não quer mais ver
         arquivoVisu.close();
-        cout << "\nExercicio numero " << numero+1 << " marcado como visualizado com sucesso!\n";
+        /*cout << "\nExercicio numero " << numero+1 << " marcado como visualizado com sucesso!\n";
         esperar(2);
-        system("clear");
+        system("clear");*/
         arquivoVisu.close();
     }
     else if (opcao == 4){
@@ -353,9 +366,9 @@ void exibir_exercicios(int numero, int anterior, int quantExercicios, exercicio 
         fstream arquivoVisu;
         arquivoVisu.open(caminho, ios::out); // Note que isto funciona porque não abro o arquivo no modo ios::app
         arquivoVisu.close();
-        cout << "\nAs visuzalicoes do arquivo " << caminho << " foram zeradas com sucesso!\n";
+        /*cout << "\nAs visuzalicoes do arquivo " << caminho << " foram zeradas com sucesso!\n";
         esperar(2);
-        system("clear");
+        system("clear");*/
         numero = aleatorio(0, quantExercicios-1); // Gerando um novo número aleatório, só para continuar o programa
     }
     else if (opcao == 5) menu_exercicios(usuario);
