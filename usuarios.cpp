@@ -39,7 +39,7 @@ void cadastrar_usuario(){
     // Adquirindo o nome de usuário
     while (true){
         cout << "Digite um nome de usuario que voce queira.\nPode usar qualquer simbolo exceto o '*' ou '/': ";
-        scanf("%[^\n]", usuario.nome);
+        cin >> usuario.nome;
 
         // Verificando se o nome é válido, e irá continuar nesse loop até que o usuário digite corretamente.
         if( ( buscaCaractere(usuario.nome, '*') + buscaCaractere(usuario.nome, '/')  ) != 0){
@@ -55,7 +55,7 @@ void cadastrar_usuario(){
     // Adquirindo a senha do usuário
     while (true){
         cout << "Digite uma senha.\nEla tambem nao pode conter '*' ou '/': ";
-        scanf("%[^\n]", usuario.senha);
+        cin >> usuario.senha;
         //cin >> usuario.senha;
 
         // Verificando se a senha é válida, do mesmo jeitinho
@@ -96,7 +96,7 @@ void cadastrar_usuario(){
                 case 'S':
                 case 's':
                     system("clear");
-                    cadastrar_exercicio();
+                    cadastrar_usuario();
                     break;
                 default:
                     system("clear");

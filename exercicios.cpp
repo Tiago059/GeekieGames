@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+short pass;
 
 using namespace std;
 
@@ -225,58 +226,153 @@ void menu_exercicios(login usuarioAtual){
 /* ---------------------------------------------------------------- */
 void exibir_exercicios(int numero, int anterior, int quantExercicios, exercicio *exercicios, login usuario){
     system("clear");
-    unsigned opcao;
+    int *exerciciosVisualizados, quantVisu = 0, pivo, opcao, i, j;
+    string linhaTeste;
+
+    fstream arquivo;
+    char *caminho;
+    bool deletar;
+
     if ( (quantExercicios - 1) != 0 ) { // Se a lista de exercícios têm mais de duas questões, então podemos gerar um intervalo
         while (numero == anterior) numero = aleatorio(0, quantExercicios-1); // pra garantir que um mesmo exercicio não se repita
     }
 
-    cout << "\t\t\t\tExercicio Nº " << numero + 1 << endl;
-    cout << "Titulo: " << exercicios[numero].titulo << endl;
-    cout << "Enunciado: " << exercicios[numero].descricao << "\n\n";
+    // Criando o caminho até o arquivo do historico
+    // Padrão: "database/exercicios/Sintaxe/historico/italo-tiago.txt"
+    caminho = new char[35 + strlen(exercicios[0].categoria) + strlen(exercicios[0].dificuldade) + strlen(usuario.nome) + 1];
+    strcat(caminho, "database/");
+    strcat(caminho, "exercicios/");
+    strcat(caminho, exercicios[0].categoria);
+    strcat(caminho, "/");
+    strcat(caminho, "historico");
+    strcat(caminho, exercicios[0].dificuldade);
+    strcat(caminho, "/");
+    strcat(caminho, usuario.nome);
+    strcat(caminho, ".txt");
 
-    cout << "Selecione uma opcao:";
-    cout << "\n1 - Proximo Exercicio            \t2 - Exercicio Anterior";
-    cout << "\n3 - Marcar como visualizada      \t4 - Reverter as visualizacoes";
-    cout << "\n5 - Voltar ao menu de exercicios \t6 - Voltar ao menu prinicipal (Logoff)";
-    cout << "\nDigite: ";
-    cin >> opcao;
+    arquivo.open(caminho, ios::out|ios::app); // Criando/acessando o arquivo
+    arquivo.close();
 
-    switch (opcao) {
-        case 1:
-            anterior = numero; // Guardando o exercicio anterior, para a próxima execução
-            numero = aleatorio(0, quantExercicios-1); // E gerando um novo exercicio aleatorio
-            exibir_exercicios(numero, anterior, quantExercicios, exercicios, usuario);
-            break;
-        case 2:
-            if (anterior == -1) {
-                system("clear");
-                cout << "Opcao invalida (inicio do programa). \n";
-                esperar(1.5);
-                exibir_exercicios(numero, anterior, quantExercicios, exercicios, usuario); // Chamando novamente a funcao com o mesmo numero, mais um loop indireto
+    //cout << "caminho:" << caminho << endl;
+
+    // Fazendo os exercicios escolhidos pelo usuário não repetirem mais
+    arquivo.open(caminho, ios::in);
+    arquivo >> linhaTeste;
+    arquivo.close();
+
+    if ( linhaTeste.length() != 0 ){ // Significa que há números de exercícios que o usuário não quer mais ver
+        // Contando quantos exercícios já foram visualizados
+        arquivo.open(caminho, ios::in);
+        while (arquivo.eof() == false){
+            arquivo >> pivo; // Variável "pivô", serve apenas para mover o cursor por dentro do arquivo
+            quantVisu++;
+        }
+        arquivo.close();
+        //cout << "quantVisu: " << quantVisu << endl;
+        // Criando o vetor com exercícios visualizados e preenchendo eles
+        arquivo.open(caminho, ios::in);
+        exerciciosVisualizados = new int[quantVisu - 1]; // Subtrai-se 1 porque o cursor vai até o eof, tendo um elemento a mais
+        for (i = 0;i < (quantVisu - 1);i++) arquivo >> exerciciosVisualizados[i]; // Gravando no vetor os exercícios visualizados
+
+        //for (i = 0;i < (quantVisu - 1);i++) cout << exerciciosVisualizados[i] << " ";
+        //cout << "exerciciosVisualizados[1]: " << exerciciosVisualizados[1] << endl;
+        //cout << "exerciciosVisualizados[1] + 10: " <<  exerciciosVisualizados[1] + 10 << endl;
+        //system("read -p '\nAperte qualquer tecla para retornar:' var");
+        // Checando se o número gerado aleatoriamente está dentro do vetor de exercícios visualizados
+        i = 0;
+        j = 0;
+        while (i < (quantVisu - 1)){
+            j++;
+            //cout << "numero " << numero << endl;
+            //cout << "i: " << i << endl;
+            //cout << "exerciciosVisualizados[i]: " <<  exerciciosVisualizados[i] << endl;
+            //const char *boole = BoolToString(numero == exerciciosVisualizados[i]);
+            //cout << "numero " << numero << " == " << "exerciciosVisualizados[" << i << "]? " << exerciciosVisualizados[i] << "eh: " << boole << endl;
+            if (numero == exerciciosVisualizados[i]){
+                numero = aleatorio(0, quantExercicios-1); // Gerando uma nova tentativa de exercício
+                //cout << "numero" << numero << endl;
+                j = 0; // Para reinciar o loop, fazendo que o programa só saia desse loop quando encontrar um número que não esteja no vetor
             }
-            else exibir_exercicios(anterior, numero, quantExercicios, exercicios, usuario); // Imprimindo o exercicio anterior
-            break;
-        case 3:
-            cout << "em desenvolvimento...";
-            exit(0);
-            break;
-        case 4:
-            cout << "em desenvolvimento...";
-            exit(0);
-            break;
-        case 5:
-            menu_exercicios(usuario);
-            break;
-        case 6:
-            menu_principal();
-            break;
-        default:
-            system("clear");
-            cout << "Opcao invalida.\n";
-            esperar(1.5);
-            exibir_exercicios(numero, anterior, quantExercicios, exercicios, usuario);
+            i = j;
+        }
+        delete exerciciosVisualizados; // Aquela liberada de memória básica
+    }
+    /*else {
+        cout << "ARQUIVO VAZIO" << endl;
     }
 
+    cout << "numero" << numero << endl;*/
+
+    cout << "|----------------------------------------------------------------------------|\n";
+    cout << "\t\t\t\tExercicio Nº " << numero + 1 << endl;
+    cout << "|----------------------------------------------------------------------------|\n\n";
+    cout << " Titulo: " << exercicios[numero].titulo << endl;
+    cout << " Enunciado: " << exercicios[numero].descricao << "\n\n";
+
+    cout << "|----------------------------------------------------------------------------|\n";
+    cout << "|                                 Menu                                       |\n";
+    cout << "|----------------------------------------------------------------------------|\n";
+    cout << "| 1 - Proximo Exercicio                2 - Exercicio Anterior                |\n";
+    cout << "| 3 - Marcar como visualizada          4 - Reverter as visualizacoes         |\n";
+    cout << "| 5 - Voltar ao menu de exercicios     6 - Voltar ao menu prinicipal(Logoff) |\n";
+    cout << "|----------------------------------------------------------------------------|\n";
+    cout << "Selecione uma opcao: ";
+    cin >> opcao;
+
+    if (opcao == 1){
+        deletar = true;
+        anterior = numero; // Guardando o exercicio anterior, para a próxima execução
+        numero = aleatorio(0, quantExercicios-1); // E gerando um novo exercicio aleatorio
+    }
+    else if (opcao == 2){
+        if (anterior == -1) {
+            system("clear");
+            cout << "Opcao invalida (pois estamos no inicio do programa...). \n";
+            esperar(1.5);
+        }
+        else {
+            int aux = anterior; // Imprimindo o exercicio anterior, trocando os valores de numero e anterior
+            anterior = numero;
+            numero = aux;
+        }
+    }
+    else if (opcao == 3){
+        deletar = true;
+        fstream arquivoVisu;
+        arquivoVisu.open(caminho, ios::out|ios::app); // Abrindo o arquivo de visualizações
+        arquivoVisu << numero << " "; // Gravando o número do exercício que o usuário não quer mais ver
+        arquivoVisu.close();
+        cout << "\nExercicio numero " << numero+1 << " marcado como visualizado com sucesso!\n";
+        esperar(2);
+        system("clear");
+        arquivoVisu.close();
+    }
+    else if (opcao == 4){
+        deletar = true;
+        // Zerando o arquivo de visualizações, abrindo e fechando o arquivo do usuário
+        fstream arquivoVisu;
+        arquivoVisu.open(caminho, ios::out); // Note que isto funciona porque não abro o arquivo no modo ios::app
+        arquivoVisu.close();
+        cout << "\nAs visuzalicoes do arquivo " << caminho << " foram zeradas com sucesso!\n";
+        esperar(2);
+        system("clear");
+        numero = aleatorio(0, quantExercicios-1); // Gerando um novo número aleatório, só para continuar o programa
+    }
+    else if (opcao == 5) menu_exercicios(usuario);
+    else if (opcao == 6) menu_principal();
+    else {
+        deletar = true;
+        system("clear");
+        cout << "Opcao invalida.\n";
+        esperar(1.5);
+        numero = aleatorio(0, quantExercicios-1); // Gerando um novo número aleatório, só para continuar o programa
+    }
+
+    if (deletar){
+        // Para garantir que o vetor de caminho será deletado corretamente, as ações terminam fechando o caminho
+        delete caminho;
+        exibir_exercicios(numero, anterior, quantExercicios, exercicios, usuario); // e chamamos o próximo exercicio
+    }
 }
 /* ---------------------------------------------------------------- */
 const char *selecionar_categoria(){
@@ -304,7 +400,7 @@ const char *selecionar_categoria(){
             else if (opcao == 5) categoria = "Funcoes";
             else if (opcao == 6) categoria = "Ponteiros";
             else if (opcao == 7) categoria = "Strings";
-            else if (opcao == 8) categoria = "Estrutuas";
+            else if (opcao == 8) categoria = "Estruturas";
             else if (opcao == 9) categoria = "Arquivos";
 
             system("clear");
