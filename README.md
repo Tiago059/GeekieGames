@@ -12,6 +12,6 @@ I) Extraia o arquivo "database.zip", deixe ele na mesma pasta dos códigos, pois
 
 II) ATENÇÃO! Por algum motivo obscuro NÃO TENTE EDITAR MANUALMENTE O ARQUIVO QUE CONTÉM OS LOGINS. Depois de fazer qualquer alteração no bloco de notas por exemplo, ao adicionar novos usuários, o programa salta uma linha e isso buga o código porque ele foi feito para ler apenas uma única linha de arquivo. ENTÃO NAO EDITE O ARQUIVO DE LOGIN MANUALMENTE, senao vai dar ruim.
 
-III) Para cadastrar exercícios, voce precisa do nome e senha do administrador. O nome e a senha do administrador são "admin" e "admin" respectivamente. Sim, isso mesmo.
+III) Para cadastrar exercícios, voce precisa do nome e senha do administrador. O nome e a senha do administrador são "admin" e "admin" respectivamente. Sim, isso mesmo. Se quiser você pode alterar isso, mudando onde é feita a autenticação, mas faça com extrema cautela. Lembre-se que esse projeto não é um GeekieGames real ou um site do Descomplica.
 
-IV)  A aplicação roda no terminal e foi criada em um computador com Linux, então se você tentar rodar num Windows ou Mac precisa fazer uma alteração no código. 
+IV)  A aplicação roda no terminal e foi criada em um computador com Linux, então se você tentar rodar num Windows ou Mac precisa fazer uma alteração nos códigos que são específicos para esses sistemas.
